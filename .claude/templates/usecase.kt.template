@@ -1,0 +1,12 @@
+// Use Case Template
+// TODO: Add specific use case implementation
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.usecases
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}Repository
+import javax.inject.Inject
+
+class {{ACTION}}{{ENTITY_CLASS_NAME}}UseCase @Inject constructor(
+    private val repository: {{ENTITY_CLASS_NAME}}Repository
+) {
+    // TODO: Add use case logic
+}

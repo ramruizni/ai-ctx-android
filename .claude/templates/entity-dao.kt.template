@@ -1,0 +1,16 @@
+// DAO Template
+// TODO: Add specific DAO methods for this entity
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.daos
+
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Insert
+import androidx.room.Update
+import androidx.room.Delete
+import kotlinx.coroutines.flow.Flow
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.dbdtos.{{ENTITY_CLASS_NAME}}DbDto
+
+@Dao
+interface {{ENTITY_CLASS_NAME}}Dao {
+    // TODO: Add only the necessary DAO methods for this feature
+}

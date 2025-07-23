@@ -1,0 +1,14 @@
+// ViewModel Template
+// TODO: Add specific ViewModel implementation
+package {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.viewmodel
+
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class {{FEATURE_CLASS_NAME}}ViewModel @Inject constructor(
+    // TODO: Inject use cases
+) : ViewModel() {
+    // TODO: Add ViewModel logic
+}

@@ -1,0 +1,13 @@
+// Database DTO Template
+// TODO: Add specific Room entity implementation
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.dbdtos
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.ColumnInfo
+
+@Entity(tableName = "{{TABLE_NAME}}")
+data class {{ENTITY_CLASS_NAME}}DbDto(
+    @PrimaryKey val id: String,
+    // TODO: Add database fields with Room annotations
+)

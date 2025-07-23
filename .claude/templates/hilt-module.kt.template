@@ -1,0 +1,16 @@
+// Hilt Module Template
+// TODO: Add specific Hilt bindings
+package {{PACKAGE_NAME}}.di.modules
+
+import dagger.Module
+import dagger.Provides
+import dagger.Binds
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class {{ENTITY_CLASS_NAME}}Module {
+    // TODO: Add Hilt bindings for this entity
+}

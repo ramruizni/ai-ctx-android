@@ -1,0 +1,13 @@
+// Screen Composable Template
+// TODO: Add specific screen implementation
+package {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.view
+
+import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+
+@Composable
+fun {{FEATURE_CLASS_NAME}}Screen(
+    viewModel: {{FEATURE_CLASS_NAME}}ViewModel = hiltViewModel()
+) {
+    // TODO: Add screen composable implementation
+}

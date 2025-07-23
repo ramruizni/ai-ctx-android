@@ -1,0 +1,14 @@
+// Repository Implementation Template (Infrastructure Layer)
+// TODO: Add specific repository implementation
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}Repository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure.{{ENTITY_CLASS_NAME}}DataSource
+import javax.inject.Inject
+
+class {{ENTITY_CLASS_NAME}}RepositoryImpl @Inject constructor(
+    private val dataSource: {{ENTITY_CLASS_NAME}}DataSource
+) : {{ENTITY_CLASS_NAME}}Repository {
+    // TODO: Add repository implementation
+}

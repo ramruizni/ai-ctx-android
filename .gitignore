@@ -1,0 +1,53 @@
+# Android Clean Architecture Template Project
+# This .gitignore is for the template/documentation project itself,
+# not for generated Android projects (those get their own .gitignore)
+
+# IDE Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary Files
+*.tmp
+*.temp
+*.log
+*.bak
+
+# Local Configuration (Claude Code settings that shouldn't be shared)
+.claude/settings.local.json
+.claude/cache/
+
+# Any accidentally created Android build artifacts in root
+build/
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Gradle wrapper and properties (preserved in starter-init)
+!starter-init/gradle/
+!starter-init/gradlew
+!starter-init/gradlew.bat
+!starter-init/gradle.properties
+!starter-init/local.properties.template
+
+# Keep all template files
+!.claude/templates/
+!.claude/commands/
+!.claude/docs/
+
+# Any test projects created during development
+test-*/
+sample-*/
+generated-*/
