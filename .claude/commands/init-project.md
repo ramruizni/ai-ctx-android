@@ -7,15 +7,41 @@ Initialize a new Android project from the starter template with custom project n
 /init-project
 ```
 
+## Prerequisites
+
+**⚠️ JDK 21 Required**: This command requires JDK 21 to be installed on your system.
+
+See @.claude/docs/prerequisites.md for installation instructions.
+
 ## Workflow
 
-I will guide you through initializing a new Android project. I'll need two pieces of information:
+### Step 0: System Requirements Check
+First, I will verify that JDK 21 is installed and accessible:
+
+I will run `java -version` and check:
+- ✅ If JDK 21.x.x is found → Continue with project initialization
+- ❌ If Java is not found or wrong version → Display this message and stop:
+
+```
+❌ ERROR: JDK 21 is required but not found or wrong version detected.
+
+Current Java version: [detected version or "not found"]
+Required: JDK 21.x.x
+
+📋 Installation Instructions:
+See .claude/docs/prerequisites.md for detailed installation steps for your platform:
+- Windows 11 + WSL
+- macOS (M1/Intel) 
+- Linux
+
+After installing JDK 21, restart your terminal and run this command again.
+```
+
+### Step 1: Collect Project Information
+I'll ask you for two pieces of information:
 
 1. **Project Name** - The name for your new project folder (e.g., "MyAwesomeApp")
 2. **Package Name** - The Android package name (e.g., "com.company.myawesomeapp")
-
-### Step 1: Collect Project Information
-First, I'll ask you for the project name and package name.
 
 ### Step 2: Copy and Rename Project
 I will:
