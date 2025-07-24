@@ -1,0 +1,36 @@
+package {{PACKAGE_NAME}}.di.modules
+
+import {{PACKAGE_NAME}}.database.{{DATABASE_CLASS_NAME}}
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.{{ENTITY_CLASS_NAME}}sDataSourceImpl
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.daos.{{ENTITY_CLASS_NAME}}Dao
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure.{{ENTITY_CLASS_NAME}}sDataSource
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+/**
+ * EXAMPLE: Abstract class + @Binds pattern (optimal performance)
+ * 
+ * To use this pattern:
+ * 1. Copy this file to .claude/templates-overrides/di-datasource-module.kt.template
+ * 2. Set architecturalPreferences.diModuleStyle = "abstract-binds-provides"
+ * 3. Customize as needed for your project
+ */
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class {{ENTITY_CLASS_NAME}}DataSourceModule {
+    
+    @Binds
+    @Singleton
+    abstract fun bind{{ENTITY_CLASS_NAME}}sDataSource(impl: {{ENTITY_CLASS_NAME}}sDataSourceImpl): {{ENTITY_CLASS_NAME}}sDataSource
+    
+    companion object {
+        @Provides
+        @Singleton
+        fun provide{{ENTITY_CLASS_NAME}}Dao({{DATABASE_VARIABLE_NAME}}: {{DATABASE_CLASS_NAME}}): {{ENTITY_CLASS_NAME}}Dao = 
+            {{DATABASE_VARIABLE_NAME}}.{{ENTITY_NAME}}Dao()
+    }
+}

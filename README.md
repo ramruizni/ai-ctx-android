@@ -12,6 +12,7 @@ Provides structured commands, templates, and documentation for Claude Code to:
 - Configure navigation graphs and routing
 - Generate dependency injection modules with Hilt
 - Maintain consistent code patterns across modules
+- **Customize templates** for project-specific architectural needs
 
 ## Architecture Generated
 
@@ -69,10 +70,26 @@ Each command includes gradle build validation:
 3. Use available slash commands to generate project components
 4. All generated code follows established architectural patterns
 
+## Template Customization
+
+### Quick Start: Override Templates
+1. **Create override directory**: `mkdir -p .claude/templates-overrides`
+2. **Copy example**: `cp .claude/examples/template-overrides/di-datasource-module-abstract.kt.template .claude/templates-overrides/di-datasource-module.kt.template`
+3. **Customize**: Edit the copied template for your project needs
+4. **Configure**: Set preferences in `.claude/project-config.json`
+
+### Available Customizations
+- **DI Module Patterns**: Abstract+@Binds (optimal) vs Object+@Provides (simple)
+- **UseCase Patterns**: Command pattern with logging vs Simple pattern
+- **Custom Dependencies**: Automatically inject project-specific Gradle dependencies
+- **Template Variables**: Full substitution system for packages, names, etc.
+
+See `.claude/examples/template-overrides/README.md` for detailed examples.
+
 ## Modularity
 
 Designed for extension with project-specific variations:
-- Template variables support customization
-- Commands can be modified per project needs
+- Template override system for architectural differences
+- Project configuration for preferences and dependencies  
+- Commands adapt automatically to your customizations
 - Documentation can include project-specific patterns
-- Convention plugins can be adapted for different requirements

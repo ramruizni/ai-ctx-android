@@ -24,6 +24,38 @@
 - `{{DATABASE_NAME}}` - Database file name (e.g., "demo_database")
 - `{{DATABASE_VARIABLE_NAME}}` - Database variable name (e.g., "demoDatabase")
 
+## Template Resolution System
+
+### Layered Template Architecture
+Templates use a layered resolution system:
+
+1. **Project-specific overrides**: `.claude/templates-overrides/`
+2. **Base templates**: `.claude/templates/`
+3. **Architectural preferences**: From `.claude/project-config.json`
+
+### Using Template Resolver
+Commands should use the template resolver to get the correct template:
+
+```bash
+# Get appropriate DI module template based on project preferences
+TEMPLATE_PATH=$(node .claude/scripts/template-resolver.js di-datasource-module)
+
+# Get appropriate UseCase template based on project preferences  
+USECASE_TEMPLATE=$(node .claude/scripts/template-resolver.js usecase)
+```
+
+### Available Template Variants
+
+#### DI Module Templates
+- **Base**: `di-datasource-module.kt.template` (object + @Provides)
+- **Abstract**: `di-datasource-module-abstract.kt.template` (abstract + @Binds + companion)
+- **Object**: `di-datasource-module-object.kt.template` (object + @Provides only)
+
+#### UseCase Templates  
+- **Base**: `usecase.kt.template` (simple pattern)
+- **Simple**: `usecase-simple.kt.template` (simple with @Inject)
+- **Command**: `usecase-command.kt.template` (command pattern + interface)
+
 ## Template Usage Examples
 
 ### Domain Model Template

@@ -1,0 +1,43 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.usecases
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}sRepository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+import javax.inject.Inject
+
+/**
+ * EXAMPLE: Command pattern UseCase with logging support
+ * 
+ * To use this pattern:
+ * 1. Copy this file to .claude/templates-overrides/usecase.kt.template
+ * 2. Set architecturalPreferences.useCasePattern = "command-pattern" 
+ * 3. Add required dependencies to your project (timber for logging)
+ * 4. Customize the command parameters and logging for your needs
+ */
+
+data class GetAll{{ENTITY_CLASS_NAME}}sCommand(
+    val includeInactive: Boolean = false,
+    val sortBy: String? = null,
+    val maxResults: Int? = null
+    // Add your own parameters here
+)
+
+interface GetAll{{ENTITY_CLASS_NAME}}sUseCase {
+    suspend operator fun invoke(command: GetAll{{ENTITY_CLASS_NAME}}sCommand): List<{{ENTITY_CLASS_NAME}}>
+}
+
+class GetAll{{ENTITY_CLASS_NAME}}sUseCaseImpl @Inject constructor(
+    private val {{ENTITY_NAME}}sRepository: {{ENTITY_CLASS_NAME}}sRepository
+    // Add your custom logger here:
+    // private val logger: YourCustomLogger
+) : GetAll{{ENTITY_CLASS_NAME}}sUseCase {
+
+    override suspend operator fun invoke(command: GetAll{{ENTITY_CLASS_NAME}}sCommand): List<{{ENTITY_CLASS_NAME}}> {
+        // Add your custom logging here:
+        // logger.logUseCaseExecution("GetAll{{ENTITY_CLASS_NAME}}s", command)
+        
+        return {{ENTITY_NAME}}sRepository.getAll()
+        
+        // Add your custom result logging here:
+        // .also { result -> logger.logUseCaseResult("GetAll{{ENTITY_CLASS_NAME}}s", result.size) }
+    }
+}

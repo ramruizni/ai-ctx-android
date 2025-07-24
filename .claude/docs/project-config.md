@@ -7,8 +7,60 @@ After running `/init-project`, the package name is stored in `.claude/project-co
 {
   "packageName": "com.company.myapp",
   "projectName": "MyApp",
-  "createdAt": "2025-01-23T10:30:00Z"
+  "createdAt": "2025-01-23T10:30:00Z",
+  "architecturalPreferences": {
+    "diModuleStyle": "abstract-binds-provides",
+    "useCasePattern": "simple-pattern",
+    "logging": "none"
+  },
+  "customDependencies": []
 }
+```
+
+## Architectural Preferences
+
+### DI Module Styles
+- **`abstract-binds-provides`**: Uses abstract class + @Binds for interfaces + companion object @Provides for concrete instances (optimal)
+- **`object-provides`**: Uses object + @Provides only (simpler, less efficient)
+
+### UseCase Patterns  
+- **`simple-pattern`**: Standard UseCase class (default)
+- **`command-pattern`**: UseCase with Command parameter class + logging decoration
+
+### Logging Options
+- **`none`**: No logging decoration (default)
+- **`decorated-injection`**: Hilt-decorated use cases with logging
+
+### Custom Dependencies
+Array of additional Gradle dependencies to inject into generated modules:
+```json
+"customDependencies": [
+  "implementation(libs.custom.logger)",
+  "implementation(libs.timber)"
+]
+```
+
+### Template-Specific Dependencies
+Some templates automatically require specific dependencies:
+
+**Command Pattern UseCase**: Requires logging dependencies:
+- `implementation(libs.timber)`
+- `implementation(libs.custom.logger)`
+
+These are automatically injected when using the command pattern.
+
+### Usage in Commands
+Commands now use the enhanced template resolver:
+
+```bash
+# Get template info with dependency requirements
+TEMPLATE_INFO=$(node .claude/scripts/template-resolver-enhanced.js usecase json)
+
+# Get just the dependencies needed
+DEPENDENCIES=$(node .claude/scripts/template-resolver-enhanced.js usecase deps)
+
+# Inject dependencies into a module's build.gradle.kts
+node .claude/scripts/gradle-dependency-injector.js inject path/to/build.gradle.kts '["implementation(libs.timber)"]'
 ```
 
 ## Global vs Project-Specific Structure

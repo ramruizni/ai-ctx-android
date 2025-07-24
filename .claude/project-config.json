@@ -1,0 +1,14 @@
+{
+  "packageName": "com.example.testproject",
+  "projectName": "TestProject",
+  "createdAt": "2025-01-24T10:30:00Z",
+  "architecturalPreferences": {
+    "diModuleStyle": "abstract-binds-provides",
+    "useCasePattern": "command-pattern",
+    "logging": "decorated-injection"
+  },
+  "customDependencies": [
+    "implementation(libs.custom.validator)",
+    "implementation(libs.custom.serializer)"
+  ]
+}

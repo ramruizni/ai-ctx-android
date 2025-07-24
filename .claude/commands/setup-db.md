@@ -16,6 +16,7 @@ I will:
 - Check if database module already exists
 - Examine existing entities and DAOs
 - Determine database version requirements
+- Load project architectural preferences from `.claude/project-config.json`
 
 ### Step 2: Design Entity and DAO
 I will:
@@ -46,9 +47,11 @@ After creating/updating database components:
 
 ### Step 5: Database Module Setup and Final Validation
 I will:
-- Create/update Hilt database module
+- Create/update Hilt database module using appropriate template:
+  - Use `.claude/scripts/template-resolver.js di-datasource-module` to get correct DI pattern
+  - Apply project's `diModuleStyle` preference (abstract-binds-provides vs object-provides)
 - Provide Room database instance
-- Provide DAO instances
+- Provide DAO instances with correct architectural pattern
 - Configure database builder with proper settings
 
 **Final Build Validation:**
