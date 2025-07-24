@@ -18,7 +18,7 @@ mkdir -p .claude/templates-overrides
 ### Step 2: Copy Example Template
 ```bash
 # Copy an example to customize
-cp .claude/examples/template-overrides/di-datasource-module-abstract.kt.template .claude/templates-overrides/di-datasource-module.kt.template
+cp examples/template-overrides/di-datasource-module-abstract.kt.template .claude/templates-overrides/di-datasource-module.kt.template
 ```
 
 ### Step 3: Customize Template

@@ -74,7 +74,7 @@ Each command includes gradle build validation:
 
 ### Quick Start: Override Templates
 1. **Create override directory**: `mkdir -p .claude/templates-overrides`
-2. **Copy example**: `cp .claude/examples/template-overrides/di-datasource-module-abstract.kt.template .claude/templates-overrides/di-datasource-module.kt.template`
+2. **Copy example**: `cp examples/template-overrides/di-datasource-module-abstract.kt.template .claude/templates-overrides/di-datasource-module.kt.template`
 3. **Customize**: Edit the copied template for your project needs
 4. **Configure**: Set preferences in `.claude/project-config.json`
 
@@ -84,7 +84,7 @@ Each command includes gradle build validation:
 - **Custom Dependencies**: Automatically inject project-specific Gradle dependencies
 - **Template Variables**: Full substitution system for packages, names, etc.
 
-See `.claude/examples/template-overrides/README.md` for detailed examples.
+See `examples/template-overrides/README.md` for detailed examples.
 
 ## Modularity
 

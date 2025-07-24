@@ -33,12 +33,6 @@ project/
 ## Architectural Conventions
 @.claude/docs/architectural-patterns.md
 
-## Code Style
-@.claude/docs/android-conventions.md
-
-## Feature Development Workflow
-@.claude/docs/feature-workflow.md
-
 ## Starter Template
 The `starter-init` directory contains the base project template with:
 - Basic app module with MainActivity and theme setup

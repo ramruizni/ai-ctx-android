@@ -1,145 +1,20 @@
-# Template Variables Reference
+# Template Variables
 
-## Available Template Variables
+## Core Variables
+- `{{PACKAGE_NAME}}` - Base package (e.g., "com.example.app")
+- `{{ENTITY_NAME}}` - Entity lowercase (e.g., "user") 
+- `{{ENTITY_CLASS_NAME}}` - Entity PascalCase (e.g., "User")
+- `{{TABLE_NAME}}` - Database table plural (e.g., "users")
+- `{{FEATURE_NAME}}` - Feature lowercase (e.g., "login")
+- `{{FEATURE_CLASS_NAME}}` - Feature PascalCase (e.g., "Login")
 
-### Project Variables
-- `{{PACKAGE_NAME}}` - Base package name (e.g., "com.example.starterdemo")
-- `{{DATABASE_CLASS_NAME}}` - Database class name (e.g., "DemoDatabase")
+## Database Variables
+- `{{DATABASE_CLASS_NAME}}` - Database class (e.g., "AppDatabase")
+- `{{DATABASE_VARIABLE_NAME}}` - Database variable (e.g., "appDatabase")
 
-### Entity Variables  
-- `{{ENTITY_NAME}}` - Entity name in lowercase (e.g., "demo")
-- `{{ENTITY_CLASS_NAME}}` - Entity class name in PascalCase (e.g., "Demo")
-- `{{TABLE_NAME}}` - Database table name, usually plural (e.g., "demos")
+## Property Variables
+- `{{PROPERTIES}}` - Comma-separated properties with types
+- `{{PROPERTY_MAPPINGS}}` - Property mapping assignments
 
-### Feature Variables
-- `{{FEATURE_NAME}}` - Feature name in lowercase (e.g., "demo") 
-- `{{FEATURE_CLASS_NAME}}` - Feature class name in PascalCase (e.g., "Demo")
-
-### Property Variables
-- `{{PROPERTIES}}` - Comma-separated list of properties (e.g., "val firstProperty: Int,\n    val secondProperty: Float")
-- `{{PROPERTY_MAPPINGS}}` - Property mappings for converters (e.g., "firstProperty = firstProperty,\n    secondProperty = secondProperty")
-
-### Database Variables
-- `{{DATABASE_CLASS_NAME}}` - Database class name (e.g., "DemoDatabase")
-- `{{DATABASE_NAME}}` - Database file name (e.g., "demo_database")
-- `{{DATABASE_VARIABLE_NAME}}` - Database variable name (e.g., "demoDatabase")
-
-## Template Resolution System
-
-### Layered Template Architecture
-Templates use a layered resolution system:
-
-1. **Project-specific overrides**: `.claude/templates-overrides/`
-2. **Base templates**: `.claude/templates/`
-3. **Architectural preferences**: From `.claude/project-config.json`
-
-### Using Template Resolver
-Commands should use the template resolver to get the correct template:
-
-```bash
-# Get appropriate DI module template based on project preferences
-TEMPLATE_PATH=$(node .claude/scripts/template-resolver.js di-datasource-module)
-
-# Get appropriate UseCase template based on project preferences  
-USECASE_TEMPLATE=$(node .claude/scripts/template-resolver.js usecase)
-```
-
-### Available Template Variants
-
-#### DI Module Templates
-- **Base**: `di-datasource-module.kt.template` (object + @Provides)
-- **Abstract**: `di-datasource-module-abstract.kt.template` (abstract + @Binds + companion)
-- **Object**: `di-datasource-module-object.kt.template` (object + @Provides only)
-
-#### UseCase Templates  
-- **Base**: `usecase.kt.template` (simple pattern)
-- **Simple**: `usecase-simple.kt.template` (simple with @Inject)
-- **Command**: `usecase-command.kt.template` (command pattern + interface)
-
-## Template Usage Examples
-
-### Domain Model Template
-```kotlin
-// Input variables:
-// PACKAGE_NAME = "com.example.starterdemo"
-// ENTITY_NAME = "demo"  
-// ENTITY_CLASS_NAME = "Demo"
-// PROPERTIES = "val firstProperty: Int,\n    val secondProperty: Float"
-
-// Output:
-package com.example.starterdemo.demo.domain.models
-
-data class Demo(
-    val id: String,
-    val firstProperty: Int,
-    val secondProperty: Float
-)
-```
-
-### DAO Template
-```kotlin
-// Input variables:
-// PACKAGE_NAME = "com.example.starterdemo"
-// ENTITY_NAME = "demo"
-// ENTITY_CLASS_NAME = "Demo" 
-// TABLE_NAME = "demos"
-
-// Output:
-package com.example.starterdemo.demo.datasource.daos
-
-import androidx.room.Dao
-import androidx.room.Query
-import com.example.starterdemo.demo.datasource.dbdtos.DemoDbDto
-
-@Dao
-abstract class DemoDao {
-    @Query("SELECT * FROM demos")
-    abstract suspend fun getAll(): List<DemoDbDto>
-}
-```
-
-## Variable Naming Conventions
-
-### Entity vs Feature Names
-- **Entity name**: The data model name (e.g., "user", "notification", "task")
-- **Feature name**: The screen flow name (e.g., "login", "notifications", "profile")
-- They can be the same (e.g., "demo" entity with "demo" feature) or different
-
-### Case Conventions
-- **lowercase**: Used for package paths, variable names (e.g., "demo", "user")
-- **PascalCase**: Used for class names (e.g., "Demo", "User")  
-- **plural**: Used for table names and collection references (e.g., "demos", "users")
-
-### Property Variables
-- Properties should include type annotations
-- Use proper Kotlin formatting with line breaks and indentation
-- Example: `"val firstProperty: Int,\n    val secondProperty: Float"`
-
-### DI Template Example
-```kotlin
-// Input variables:
-// PACKAGE_NAME = "com.example.starterdemo"
-// ENTITY_NAME = "demo"
-// ENTITY_CLASS_NAME = "Demo"
-// DATABASE_CLASS_NAME = "DemoDatabase"
-
-// Output:
-@Module
-@InstallIn(SingletonComponent::class)
-object DemoDataSourceModule {
-
-    @Singleton
-    @Provides
-    fun provideDemoDao(
-        demoDatabase: DemoDatabase
-    ): DemoDao {
-        return demoDatabase.demoDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideDemosDataSource(demoDao: DemoDao): DemosDataSource {
-        return DemosDataSourceImpl(demoDao)
-    }
-}
-```
+## Template Resolution
+Commands use `.claude/scripts/template-resolver-enhanced.js` to select templates based on project preferences from `.claude/project-config.json`.
