@@ -1,0 +1,5 @@
+package {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.view
+
+interface I{{FEATURE_CLASS_NAME}}Navigator {
+    fun navigateUp()
+}

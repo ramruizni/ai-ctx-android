@@ -1,14 +1,45 @@
-// ViewModel Template
-// TODO: Add specific ViewModel implementation
 package {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.usecases.GetAll{{ENTITY_CLASS_NAME}}sUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class {{FEATURE_CLASS_NAME}}State(
+    val isLoading: Boolean = false,
+    val error: String? = null
+)
+
+sealed class {{FEATURE_CLASS_NAME}}Event {
+    data class ShowSuccess(val message: String): {{FEATURE_CLASS_NAME}}Event()
+}
 
 @HiltViewModel
 class {{FEATURE_CLASS_NAME}}ViewModel @Inject constructor(
-    // TODO: Inject use cases
-) : ViewModel() {
-    // TODO: Add ViewModel logic
+    private val getAll{{ENTITY_CLASS_NAME}}s: GetAll{{ENTITY_CLASS_NAME}}sUseCase
+): ViewModel() {
+
+    private val _state = MutableStateFlow({{FEATURE_CLASS_NAME}}State())
+    val state = _state.asStateFlow()
+
+    private val _events = Channel<{{FEATURE_CLASS_NAME}}Event>()
+    val events = _events.receiveAsFlow()
+
+    private val _{{ENTITY_NAME}}s: MutableStateFlow<List<{{ENTITY_CLASS_NAME}}>> = MutableStateFlow(emptyList())
+    val {{ENTITY_NAME}}s = _{{ENTITY_NAME}}s.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            _{{ENTITY_NAME}}s.update { getAll{{ENTITY_CLASS_NAME}}s() }
+        }
+    }
 }

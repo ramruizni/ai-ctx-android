@@ -118,3 +118,54 @@ navigation/login/          # Matches screen flow name
 **Screen Flow** → **ViewModel** → **UseCase** → **Repository** → **DataSource** → **DAO**
 
 The screen flows consume domain entities through use cases, but navigation is organized independently by user journey, not data structure.
+
+## Dependency Injection Flow
+
+### Module Organization
+All DI modules are located in `:app/src/main/java/.../di/modules/`:
+
+```
+app/di/modules/
+├── DatabaseModule.kt              # Database instance (shared)
+├── {Entity}DataSourceModule.kt    # Per-entity DAO and DataSource
+├── {Entity}InfrastructureModule.kt # Per-entity Repository 
+└── {Entity}DomainModule.kt        # Per-entity Use Cases
+```
+
+### Dependency Chain
+```
+DatabaseModule
+  ↳ provides Database instance (@Singleton)
+
+{Entity}DataSourceModule  
+  ↳ provides {Entity}Dao (from Database)
+  ↳ provides {Entity}sDataSource (from DAO)
+
+{Entity}InfrastructureModule
+  ↳ provides {Entity}sRepository (from DataSource)
+
+{Entity}DomainModule
+  ↳ provides GetAll{Entity}sUseCase (from Repository)
+
+{Feature}ViewModel
+  ↳ @Inject constructor(useCase: GetAll{Entity}sUseCase)
+```
+
+### Hilt Configuration
+- All modules use `@InstallIn(SingletonComponent::class)`
+- All providers use `@Singleton` scope
+- Database uses `@ApplicationContext` for Room builder
+- ViewModels use `@HiltViewModel` annotation
+
+### Example DI Flow (Demo Feature)
+```
+DatabaseModule → DemoDatabase
+  ↓
+DemoDataSourceModule → DemoDao → DemosDataSource  
+  ↓
+DemoInfrastructureModule → DemosRepository
+  ↓  
+DemoDomainModule → GetAllDemosUseCase
+  ↓
+DemoViewModel @Inject constructor(GetAllDemosUseCase)
+```

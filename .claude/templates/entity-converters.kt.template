@@ -1,0 +1,14 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.converters
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.dbdtos.{{ENTITY_CLASS_NAME}}DbDto
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+
+fun {{ENTITY_CLASS_NAME}}.convertToDbDto() = {{ENTITY_CLASS_NAME}}DbDto(
+    id = id,
+    {{PROPERTY_MAPPINGS}}
+)
+
+fun {{ENTITY_CLASS_NAME}}DbDto.convertToDomain() = {{ENTITY_CLASS_NAME}}(
+    id = id,
+    {{PROPERTY_MAPPINGS}}
+)

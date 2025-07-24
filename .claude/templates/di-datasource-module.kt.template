@@ -1,0 +1,30 @@
+package {{PACKAGE_NAME}}.di.modules
+
+import {{PACKAGE_NAME}}.database.{{DATABASE_CLASS_NAME}}
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.{{ENTITY_CLASS_NAME}}sDataSourceImpl
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.daos.{{ENTITY_CLASS_NAME}}Dao
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure.{{ENTITY_CLASS_NAME}}sDataSource
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object {{ENTITY_CLASS_NAME}}DataSourceModule {
+
+    @Singleton
+    @Provides
+    fun provide{{ENTITY_CLASS_NAME}}Dao(
+        {{DATABASE_VARIABLE_NAME}}: {{DATABASE_CLASS_NAME}}
+    ): {{ENTITY_CLASS_NAME}}Dao {
+        return {{DATABASE_VARIABLE_NAME}}.{{ENTITY_NAME}}Dao()
+    }
+
+    @Singleton
+    @Provides
+    fun provide{{ENTITY_CLASS_NAME}}sDataSource({{ENTITY_NAME}}Dao: {{ENTITY_CLASS_NAME}}Dao): {{ENTITY_CLASS_NAME}}sDataSource {
+        return {{ENTITY_CLASS_NAME}}sDataSourceImpl({{ENTITY_NAME}}Dao)
+    }
+}

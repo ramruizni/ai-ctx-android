@@ -1,0 +1,20 @@
+package {{PACKAGE_NAME}}.di.modules
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}sRepository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.usecases.GetAll{{ENTITY_CLASS_NAME}}sUseCase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object {{ENTITY_CLASS_NAME}}DomainModule {
+
+    @Singleton
+    @Provides
+    fun provideGetAll{{ENTITY_CLASS_NAME}}sUseCase({{ENTITY_NAME}}sRepository: {{ENTITY_CLASS_NAME}}sRepository): GetAll{{ENTITY_CLASS_NAME}}sUseCase {
+        return GetAll{{ENTITY_CLASS_NAME}}sUseCase({{ENTITY_NAME}}sRepository)
+    }
+}

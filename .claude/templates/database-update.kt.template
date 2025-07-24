@@ -1,0 +1,16 @@
+package {{PACKAGE_NAME}}.database
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.daos.{{ENTITY_CLASS_NAME}}Dao
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.dbdtos.{{ENTITY_CLASS_NAME}}DbDto
+
+@Database(
+    entities = [
+        {{ENTITY_CLASS_NAME}}DbDto::class
+    ],
+    version = 1
+)
+abstract class {{DATABASE_CLASS_NAME}} : RoomDatabase() {
+    abstract fun {{ENTITY_NAME}}Dao(): {{ENTITY_CLASS_NAME}}Dao
+}

@@ -1,0 +1,21 @@
+package {{PACKAGE_NAME}}.navigation.{{FEATURE_NAME}}
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.view.{{FEATURE_CLASS_NAME}}Screen
+import {{PACKAGE_NAME}}.navigation.{{FEATURE_NAME}}.routes.{{FEATURE_CLASS_NAME}}GraphRoute
+import {{PACKAGE_NAME}}.navigation.{{FEATURE_NAME}}.routes.{{FEATURE_CLASS_NAME}}Route
+
+fun NavGraphBuilder.{{FEATURE_NAME}}Graph(
+    navController: NavController
+) {
+    val navigator = {{FEATURE_CLASS_NAME}}Navigator(navController)
+
+    navigation<{{FEATURE_CLASS_NAME}}GraphRoute>(startDestination = {{FEATURE_CLASS_NAME}}Route) {
+        composable<{{FEATURE_CLASS_NAME}}Route> {
+            {{FEATURE_CLASS_NAME}}Screen(navigator = navigator)
+        }
+    }
+}

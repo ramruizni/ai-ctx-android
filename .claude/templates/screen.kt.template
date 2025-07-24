@@ -1,13 +1,57 @@
-// Screen Composable Template
-// TODO: Add specific screen implementation
 package {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.view
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.viewmodel.{{FEATURE_CLASS_NAME}}Event
+import {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.viewmodel.{{FEATURE_CLASS_NAME}}ViewModel
 
 @Composable
 fun {{FEATURE_CLASS_NAME}}Screen(
+    navigator: I{{FEATURE_CLASS_NAME}}Navigator,
     viewModel: {{FEATURE_CLASS_NAME}}ViewModel = hiltViewModel()
 ) {
-    // TODO: Add screen composable implementation
+    val context = LocalContext.current
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val {{ENTITY_NAME}}s by viewModel.{{ENTITY_NAME}}s.collectAsStateWithLifecycle()
+
+    LaunchedEffect(context) {
+        viewModel.events.collect { event ->
+            when(event) {
+                is {{FEATURE_CLASS_NAME}}Event.ShowSuccess -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+            .navigationBarsPadding()
+    ) { paddingValues ->
+        Column (
+            modifier = Modifier.fillMaxSize().padding(paddingValues)
+        ) {
+            Button(
+                onClick = {
+                    //navigator.navigateToX()
+                }
+            ) {
+                Text("Navigate to X")
+            }
+        }
+    }
 }

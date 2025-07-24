@@ -1,10 +1,7 @@
-// Data Source Interface Template (Infrastructure Layer)
-// TODO: Add specific data source contract
 package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure
 
 import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
-import kotlinx.coroutines.flow.Flow
 
-interface {{ENTITY_CLASS_NAME}}DataSource {
-    // TODO: Add data source method contracts
+interface {{ENTITY_CLASS_NAME}}sDataSource {
+    suspend fun getAll(): List<{{ENTITY_CLASS_NAME}}>
 }

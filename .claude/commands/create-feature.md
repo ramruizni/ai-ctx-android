@@ -112,10 +112,26 @@ I will create:
 - **Repository Implementation**: Maps between domain and data layers
 
 ### Step 8: Dependency Injection Setup
-I will:
-- Create/update Hilt modules for the new feature
-- Provide bindings for repository and data source
-- Ensure proper scoping and dependencies
+I will create Hilt modules in the `:app` module under `di/modules/`:
+
+**Database Module** (if first entity):
+- `DatabaseModule.kt` - Provides Room database instance
+- Uses `@Singleton` scope and `@ApplicationContext`
+
+**DataSource Module**:
+- `{Entity}DataSourceModule.kt` - Provides DAO and DataSource implementations
+- Binds DAO from database instance
+- Binds DataSource interface to implementation
+
+**Infrastructure Module**:
+- `{Entity}InfrastructureModule.kt` - Provides Repository implementations
+- Binds Repository interface to implementation
+
+**Domain Module**:
+- `{Entity}DomainModule.kt` - Provides Use Cases
+- Injects Repository into Use Cases
+
+All modules use `@InstallIn(SingletonComponent::class)` and `@Singleton` scope for consistency.
 
 ### Step 9: Navigation Setup
 I will:
@@ -157,10 +173,30 @@ feature/
     └── screen/
 ```
 
+## Template Variables Used
+When generating code, I use these template variables:
+- `{{PACKAGE_NAME}}` - From project config
+- `{{ENTITY_NAME}}` - Entity name (lowercase)
+- `{{ENTITY_CLASS_NAME}}` - Entity class name (PascalCase)
+- `{{FEATURE_NAME}}` - Feature name (lowercase)
+- `{{FEATURE_CLASS_NAME}}` - Feature class name (PascalCase)
+- `{{TABLE_NAME}}` - Database table name (plural)
+- `{{PROPERTIES}}` - Model properties with types
+- `{{PROPERTY_MAPPINGS}}` - Property mappings for converters
+
+See @.claude/docs/template-variables.md for full reference.
+
+## Available Templates
+- **Data Layer**: entity-model, entity-dbdto, entity-dao, entity-converters, datasource-interface, datasource-impl, repository-interface, repository-impl, usecase
+- **Presentation Layer**: viewmodel, screen, navigator-interface  
+- **Navigation**: navigation-graph-route, navigation-route, navigation-navigator, navigation-graph
+- **Database**: database-update
+- **Dependency Injection**: di-database-module, di-datasource-module, di-infrastructure-module, di-domain-module
+
 ## What I'll need from you:
-1. Screen flow name (e.g., "login", "notifications", "profile")
-2. Entity/domain name if data persistence needed (e.g., "user", "notification")
-3. Brief description of the feature and screens
-4. Main properties/fields for the data model (if needed)
+1. **Feature name** (e.g., "demo", "login", "notifications") - will be used for both entity and feature if they match
+2. **Entity properties** with types (e.g., "firstProperty: Int, secondProperty: Float")
+3. **Brief description** of what the feature does
+4. **Confirmation** if entity name differs from feature name
 
 Ready to start? Provide the feature name and I'll begin the analysis!

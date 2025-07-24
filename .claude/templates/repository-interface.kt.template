@@ -1,10 +1,7 @@
-// Repository Interface Template (Domain Layer)
-// TODO: Add specific repository contract
 package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain
 
 import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
-import kotlinx.coroutines.flow.Flow
 
-interface {{ENTITY_CLASS_NAME}}Repository {
-    // TODO: Add repository method contracts
+interface {{ENTITY_CLASS_NAME}}sRepository {
+    suspend fun getAll(): List<{{ENTITY_CLASS_NAME}}>
 }

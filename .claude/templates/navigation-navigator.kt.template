@@ -1,0 +1,10 @@
+package {{PACKAGE_NAME}}.navigation.{{FEATURE_NAME}}
+
+import androidx.navigation.NavController
+import {{PACKAGE_NAME}}.features.{{FEATURE_NAME}}.view.I{{FEATURE_CLASS_NAME}}Navigator
+
+class {{FEATURE_CLASS_NAME}}Navigator(private val navController: NavController) : I{{FEATURE_CLASS_NAME}}Navigator {
+    override fun navigateUp() {
+        navController.navigateUp()
+    }
+}

@@ -1,0 +1,6 @@
+package {{PACKAGE_NAME}}.navigation.{{FEATURE_NAME}}.routes
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object {{FEATURE_CLASS_NAME}}Route

@@ -1,0 +1,21 @@
+package {{PACKAGE_NAME}}.di.modules
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}sRepository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure.{{ENTITY_CLASS_NAME}}sDataSource
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure.{{ENTITY_CLASS_NAME}}sRepositoryImpl
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object {{ENTITY_CLASS_NAME}}InfrastructureModule {
+
+    @Singleton
+    @Provides
+    fun provide{{ENTITY_CLASS_NAME}}sRepository({{ENTITY_NAME}}sDataSource: {{ENTITY_CLASS_NAME}}sDataSource): {{ENTITY_CLASS_NAME}}sRepository {
+        return {{ENTITY_CLASS_NAME}}sRepositoryImpl({{ENTITY_NAME}}sDataSource)
+    }
+}
