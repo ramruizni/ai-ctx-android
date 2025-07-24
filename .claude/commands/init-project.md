@@ -45,8 +45,11 @@ I'll ask you for two pieces of information:
 
 ### Step 2: Copy and Rename Project
 I will:
-- Copy the `starter-init` directory to a new directory with your project name
+- **Copy** (not move) the `starter-init` directory to a new directory with your project name
+- **Preserve** the original `starter-init` directory - it must never be deleted or moved
 - Navigate to the new project directory
+
+**IMPORTANT**: The `starter-init` directory must always remain intact as the template source. Use `cp -r` or equivalent copy operations, never `mv` or rename operations that would remove the original.
 
 ### Step 3: Replace Package Structure
 I will:

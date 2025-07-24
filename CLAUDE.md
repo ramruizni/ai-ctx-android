@@ -26,7 +26,7 @@ project/
 ```
 
 ## Build Commands
-- Build: `./gradlew build`
+- Build: `./gradlew buildDebug`
 - Test: `./gradlew test`
 - Lint: `./gradlew lintDebug`
 
