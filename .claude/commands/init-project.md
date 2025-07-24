@@ -36,11 +36,25 @@ I will:
 - Update database names, class names, and other references
 - Update gradle configuration files
 
-### Step 5: Verify Setup
-I will:
-- Run a build check to ensure everything compiles
+### Step 5: Gradle Build Verification
+I will run comprehensive gradle validation:
+
+**Build Validation:**
+- `./gradlew clean build` - Full clean build to ensure compilation success
+- `./gradlew lintDebug` - Run lint checks to catch code quality issues  
+- `./gradlew test` - Execute all unit tests to verify functionality
+
+**Setup Verification:**
 - Verify the package structure is correct
 - Confirm all references have been updated
+- Check gradle sync completed successfully
+- Validate Hilt dependency injection setup
+
+**Failure Handling:**
+- If any gradle command fails, I will analyze the errors
+- Fix compilation issues, missing dependencies, or configuration problems
+- Re-run validation until all checks pass
+- Report any unresolvable issues for manual review
 
 ## What gets replaced:
 - Package names: `com.example.starterdemo` → your package name

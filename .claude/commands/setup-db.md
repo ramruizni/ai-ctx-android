@@ -38,12 +38,31 @@ I will:
 - Update database class with new entity
 - Handle migrations if needed
 
-### Step 5: Database Module Setup
+**Database Build Validation:**
+After creating/updating database components:
+- `./gradlew :database:build` - Verify database module compiles
+- Fix any Room annotation errors or schema issues
+- Validate entity-DAO relationships are correct
+
+### Step 5: Database Module Setup and Final Validation
 I will:
 - Create/update Hilt database module
 - Provide Room database instance
 - Provide DAO instances
 - Configure database builder with proper settings
+
+**Final Build Validation:**
+After completing database setup:
+- `./gradlew build` - Full project build to ensure database integration
+- `./gradlew lintDebug` - Run lint checks on database code
+- Verify Hilt dependency injection compiles correctly
+- Test database module integration with existing app modules
+
+**Error Resolution:**
+- Fix any compilation errors or dependency conflicts
+- Resolve Room schema validation issues
+- Address Hilt binding problems
+- Re-run validation until all checks pass
 
 ## Approval Process:
 Before creating any database components, I will show you:

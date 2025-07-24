@@ -133,6 +133,12 @@ I will create Hilt modules in the `:app` module under `di/modules/`:
 
 All modules use `@InstallIn(SingletonComponent::class)` and `@Singleton` scope for consistency.
 
+**DI Validation:**
+After creating all DI modules, I will run:
+- `./gradlew build` - Verify DI setup compiles correctly
+- Fix any Hilt compilation errors or missing bindings
+- Ensure dependency graph is properly configured
+
 ### Step 9: Navigation Setup
 I will:
 - Determine the screen flow name (may differ from entity name)
@@ -147,12 +153,28 @@ I will create:
 - **Composable Screen(s)**: UI implementation
 - Wire up ViewModel with dependency injection
 
-### Step 11: Integration and Verification
+### Step 11: Integration and Final Verification
 I will:
 - Update navigation to include new feature
-- Run build and lint checks
-- Verify dependency injection setup
-- Test navigation flow
+- Wire up all components end-to-end
+
+**Comprehensive Build Validation:**
+- `./gradlew clean build` - Full clean build to ensure all modules compile
+- `./gradlew lintDebug` - Run lint checks on all new code
+- `./gradlew test` - Execute unit tests to verify functionality
+- `./gradlew app:assembleDebug` - Verify app builds successfully with new feature
+
+**Integration Verification:**
+- Verify dependency injection setup works correctly
+- Test navigation flow to new feature screens
+- Validate database operations (if applicable)
+- Check UI component rendering and state management
+
+**Error Handling:**
+- If any validation fails, I will analyze and fix issues
+- Resolve compilation errors, dependency conflicts, or integration problems  
+- Re-run validation steps until all checks pass
+- Provide summary of any remaining manual verification needed
 
 ## Architecture Pattern
 Each feature follows this structure:
