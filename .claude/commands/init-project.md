@@ -30,9 +30,9 @@ Required: JDK 21.x.x
 
 📋 Installation Instructions:
 See .claude/docs/prerequisites.md for detailed installation steps for your platform:
-- Windows 11 + WSL
-- macOS (M1/Intel) 
-- Linux
+- macOS (M1/Intel with Homebrew/SDKMAN)
+- Windows 11 + WSL Ubuntu
+- Linux (Ubuntu/Debian)
 
 After installing JDK 21, restart your terminal and run this command again.
 ```
