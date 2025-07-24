@@ -51,28 +51,49 @@ navigation/
 ### Domain Entity Module (Data-focused)
 ```
 user/                      # Data entity
-├── datasource/
+├── datasource/           # Gradle module (:user:datasource)
 │   ├── daos/             # UserDao
 │   ├── dbdtos/          # UserDbDto
 │   ├── converters/      # Type converters
 │   └── UsersDataSourceImpl.kt
-├── domain/
+├── domain/              # Gradle module (:user:domain)
 │   ├── models/          # User (pure model)
 │   ├── usecases/        # GetUserUseCase, etc.
 │   └── UsersRepository.kt
-└── infrastructure/
+└── infrastructure/      # Gradle module (:user:infrastructure)
     ├── UsersDataSource.kt
     └── UsersRepositoryImpl.kt
+```
+
+### Module Dependencies
+```
+:user:datasource 
+  ↳ depends on :user:domain
+  ↳ depends on :user:infrastructure
+  ↳ includes Room dependencies
+
+:user:infrastructure
+  ↳ depends on :user:domain
+
+:user:domain
+  ↳ pure Kotlin (no Android dependencies)
+
+:features:profile:view
+  ↳ depends on :user:domain
+  ↳ depends on :features:profile:viewmodel
+
+:features:profile:viewmodel  
+  ↳ depends on :user:domain
 ```
 
 ### Feature Module (Screen flow-focused)
 ```
 features/login/            # Screen flow
-├── view/
+├── view/                 # Gradle module (:features:login:view)
 │   ├── LoginScreen.kt
 │   ├── RegisterScreen.kt
 │   └── ILoginNavigator.kt
-└── viewmodel/
+└── viewmodel/           # Gradle module (:features:login:viewmodel)
     ├── LoginViewModel.kt
     └── RegisterViewModel.kt
 ```
