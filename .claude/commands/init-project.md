@@ -4,46 +4,34 @@ Initialize a new Android project from the starter template with custom project n
 
 ## Usage
 ```
-/init-project
+/init-project <ProjectName> <PackageName>
+```
+
+**Parameters:**
+- `ProjectName`: Name for your project directory (e.g., "PlanetsApp", "MyAwesomeApp")
+- `PackageName`: Android package name (e.g., "com.example.planetsapp", "com.company.myapp")
+
+**Examples:**
+```bash
+/init-project PlanetsApp com.example.planetsapp
+/init-project TaskManager com.company.taskmanager
 ```
 
 ## Prerequisites
 
-**⚠️ JDK 21 Required**: This command requires JDK 21 to be installed on your system.
+**⚠️ Environment Setup Required**: Run `/check-prerequisites` first to configure your development environment.
 
-See @.claude/docs/prerequisites.md for installation instructions.
+This command assumes your environment is already configured with:
+- ✅ JDK 21 installed and accessible
+- ✅ Android SDK detected and configured  
+- ✅ `starter-init/local.properties` created with correct SDK path
+- ✅ Gradle wrapper permissions set
+
+If you haven't run `/check-prerequisites`, do that first for initial setup.
 
 ## Workflow
 
-### Step 0: System Requirements Check
-First, I will verify that JDK 21 is installed and accessible:
-
-I will run `java -version` and check:
-- ✅ If JDK 21.x.x is found → Continue with project initialization
-- ❌ If Java is not found or wrong version → Display this message and stop:
-
-```
-❌ ERROR: JDK 21 is required but not found or wrong version detected.
-
-Current Java version: [detected version or "not found"]
-Required: JDK 21.x.x
-
-📋 Installation Instructions:
-See .claude/docs/prerequisites.md for detailed installation steps for your platform:
-- macOS (M1/Intel with Homebrew/SDKMAN)
-- Windows 11 + WSL Ubuntu
-- Linux (Ubuntu/Debian)
-
-After installing JDK 21, restart your terminal and run this command again.
-```
-
-### Step 1: Collect Project Information
-I'll ask you for two pieces of information:
-
-1. **Project Name** - The name for your new project folder (e.g., "MyAwesomeApp")
-2. **Package Name** - The Android package name (e.g., "com.company.myawesomeapp")
-
-### Step 2: Copy and Rename Project
+### Step 1: Copy and Rename Project
 I will:
 - **Copy** (not move) the `starter-init` directory to a new directory with your project name
 - **Preserve** the original `starter-init` directory - it must never be deleted or moved
@@ -51,21 +39,21 @@ I will:
 
 **IMPORTANT**: The `starter-init` directory must always remain intact as the template source. Use `cp -r` or equivalent copy operations, never `mv` or rename operations that would remove the original.
 
-### Step 3: Replace Package Structure
+### Step 2: Replace Package Structure
 I will:
 - Replace all occurrences of `com.example.starterdemo` with your new package name
 - Create the new package directory structure (e.g., `com/company/myapp`)
 - Move files to the correct package directories
 - Update all import statements and references
 
-### Step 4: Replace Project References
+### Step 3: Replace Project References
 I will:
 - Replace all occurrences of `starterdemo` with your project name (lowercase)
 - Replace all occurrences of `StarterDemo` with your project name (PascalCase)
 - Update database names, class names, and other references
 - Update gradle configuration files
 
-### Step 5: Gradle Build Verification
+### Step 4: Gradle Build Verification
 I will run comprehensive gradle validation:
 
 **Build Validation:**
@@ -92,4 +80,34 @@ I will run comprehensive gradle validation:
 - Directory structures to match new package name
 - Gradle project configurations
 
-Let me know when you're ready to start, and I'll begin by asking for your project name and package name.
+## Benefits of This Approach
+
+**Fast Project Creation**: No environment checking - assumes setup is complete
+**Reliable**: Dependencies on pre-configured environment via `/check-prerequisites`
+**Focused**: Single responsibility - just create projects
+**Repeatable**: Create multiple projects quickly once environment is set up
+
+## Project Creation Flow
+
+1. **One-time setup**: `/check-prerequisites` (once per machine)
+2. **Fast project creation**: `/init-project ProjectName com.package.name` (as many times as needed)
+
+## What Gets Created
+
+Your new project will have:
+- ✅ Clean Architecture + MVVM structure
+- ✅ Jetpack Compose UI framework
+- ✅ Room database with correct naming
+- ✅ Hilt dependency injection
+- ✅ Navigation Compose setup
+- ✅ Custom Gradle conventions
+- ✅ Correct package structure
+- ✅ Platform-specific SDK configuration (inherited from starter-init)
+
+## Next Steps
+
+After successful project creation:
+- `cd ProjectName && ./gradlew buildDebug` to build
+- Use `/create-feature` to add new features
+- Use `/setup-db` to configure database entities
+- Use `/setup-navigation` to add navigation flows

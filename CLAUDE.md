@@ -10,6 +10,7 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 - **Build**: Gradle with Kotlin DSL and build-logic conventions
 
 ## Available Commands
+- `/check-prerequisites` - Verify and configure development environment (run once)
 - `/init-project` - Initialize new project from starter template
 - `/create-feature` - Create complete feature with all layers
 - `/setup-db` - Setup/update database module
