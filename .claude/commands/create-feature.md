@@ -112,24 +112,34 @@ I will create:
 - **Repository Implementation**: Maps between domain and data layers
 
 ### Step 8: Dependency Injection Setup
-I will create Hilt modules in the `:app` module under `di/modules/`:
+I will create Hilt modules in the `:app` module under `di/modules/` based on your `injectionPattern` preference:
+
+#### Manual Instantiation Pattern (Default)
+**DataSource Module**:
+- `{Entity}DataSourceModule.kt` - Provides DAO and manually instantiated DataSource
+- Uses `@Provides` methods with explicit constructor calls
+
+**Infrastructure Module**:
+- `{Entity}InfrastructureModule.kt` - Provides manually instantiated Repository
+- Uses `@Provides` methods with explicit constructor calls
+
+**Domain Module**:
+- `{Entity}DomainModule.kt` - Provides Use Cases with explicit instantiation
+
+#### Constructor Injection Pattern
+**DataSource Module**:
+- `{Entity}DataSourceModule.kt` - Provides DataSource with `@Inject` constructors
+- Uses `@Provides` methods (no `@Binds` annotations), Hilt handles instantiation via `@Inject`
+
+**Infrastructure Module**:
+- `{Entity}InfrastructureModule.kt` - Provides Repository with `@Inject` constructors
+- Uses `@Provides` methods (no `@Binds` annotations), Hilt handles instantiation via `@Inject`
 
 **Database Module** (if first entity):
 - `DatabaseModule.kt` - Provides Room database instance
 - Uses `@Singleton` scope and `@ApplicationContext`
 
-**DataSource Module**:
-- `{Entity}DataSourceModule.kt` - Provides DAO and DataSource implementations
-- Binds DAO from database instance
-- Binds DataSource interface to implementation
-
-**Infrastructure Module**:
-- `{Entity}InfrastructureModule.kt` - Provides Repository implementations
-- Binds Repository interface to implementation
-
-**Domain Module**:
-- `{Entity}DomainModule.kt` - Provides Use Cases
-- Injects Repository into Use Cases
+**Note**: ViewModels always use `@HiltViewModel` + `@Inject` regardless of pattern.
 
 All modules use `@InstallIn(SingletonComponent::class)` and `@Singleton` scope for consistency.
 
@@ -195,20 +205,51 @@ feature/
     └── screen/
 ```
 
-## Template Variables Used
-When generating code, I use these template variables:
-- `{{PACKAGE_NAME}}` - From project config
-- `{{ENTITY_NAME}}` - Entity name (lowercase)
-- `{{ENTITY_CLASS_NAME}}` - Entity class name (PascalCase)
-- `{{FEATURE_NAME}}` - Feature name (lowercase)
-- `{{FEATURE_CLASS_NAME}}` - Feature class name (PascalCase)
-- `{{TABLE_NAME}}` - Database table name (plural)
+## Template Variables Reference
+When creating custom template overrides, use these standardized variables:
+- `{{PACKAGE_NAME}}` - Base package from project config (e.g., "com.company.myapp")
+- `{{ENTITY_NAME}}` - Entity name lowercase (e.g., "user")
+- `{{ENTITY_CLASS_NAME}}` - Entity class PascalCase (e.g., "User")
+- `{{FEATURE_NAME}}` - Feature name lowercase (e.g., "login")
+- `{{FEATURE_CLASS_NAME}}` - Feature class PascalCase (e.g., "Login")
+- `{{TABLE_NAME}}` - Database table plural (e.g., "users")
 - `{{PROPERTIES}}` - Model properties with types
 - `{{PROPERTY_MAPPINGS}}` - Property mappings for converters
 
-See @.claude/docs/template-variables.md for full reference.
+**Custom Template Requirements:**
+- **Preserve all variables**: Your overrides must use the same `{{VARIABLE_NAME}}` placeholders
+- **Maintain package structure**: Keep expected imports and package declarations
+- **Test with all preferences**: Verify compatibility with different `architecturalPreferences`
 
-## Available Templates
+See @.claude/docs/template-variables.md for complete reference and examples.
+
+## Template Customization
+
+### Project-Specific Template Overrides
+You can customize any generated code by placing template overrides in **your project's** `.claude/templates-overrides/` directory:
+
+```
+YourProject/
+├── .claude/
+│   ├── project-config.json          # Architectural preferences
+│   └── templates-overrides/         # Your custom templates
+│       ├── viewmodel.kt.template     # Custom ViewModel pattern
+│       ├── screen.kt.template        # Custom Screen composition
+│       └── di-datasource-module-object.kt.template
+└── src/
+```
+
+**Template Resolution Priority:**
+1. **Your Project Override**: `{project}/.claude/templates-overrides/{template}.kt.template`
+2. **System Default**: `{system}/.claude/templates/{template}.kt.template`
+
+This allows you to:
+- Add company-specific frameworks and patterns
+- Customize coding standards per project
+- Include project-specific validation or business logic
+- Maintain team consistency while allowing flexibility
+
+### Available Base Templates
 - **Data Layer**: entity-model, entity-dbdto, entity-dao, entity-converters, datasource-interface, datasource-impl, repository-interface, repository-impl, usecase
 - **Presentation Layer**: viewmodel, screen, navigator-interface  
 - **Navigation**: navigation-graph-route, navigation-route, navigation-navigator, navigation-graph

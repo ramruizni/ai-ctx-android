@@ -1,0 +1,25 @@
+# Errors Log from Claude Code Commands
+
+## /init-project MoviesApp com.example.movies
+
+**Command Status**: SUCCESS ✅
+
+**Critical Errors**: None
+
+**Warnings (Non-Critical)**:
+1. **Deprecation Warning**: Build uses deprecated `kotlinOptions` DSL (should migrate to `compilerOptions`)
+2. **R8 Warning**: Type pattern warning in proguard rules (cosmetic only)
+3. **API Deprecation**: Hilt generated code uses deprecated APIs (framework-level, not user code)
+
+**Build Validation Results**:
+- `./gradlew clean` - SUCCESS (8s, 7 actionable tasks)
+- `./gradlew build` - SUCCESS (1m, 296 actionable tasks)
+- `./gradlew lintDebug` - SUCCESS (1s, 118 actionable tasks)
+- `./gradlew test` - SUCCESS (1s, 135 actionable tasks)
+
+**Summary**: The /init-project command executed successfully with no errors. All gradle build validations passed. Only minor deprecation warnings were present, which are non-blocking and cosmetic.
+
+---
+
+## Additional Commands
+(Will be appended as more commands are run)

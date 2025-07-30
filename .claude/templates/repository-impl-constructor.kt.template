@@ -1,0 +1,13 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}sRepository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+import javax.inject.Inject
+
+class {{ENTITY_CLASS_NAME}}sRepositoryImpl @Inject constructor(
+    private val {{ENTITY_NAME}}sDataSource: {{ENTITY_CLASS_NAME}}sDataSource
+): {{ENTITY_CLASS_NAME}}sRepository {
+    override suspend fun getAll(): List<{{ENTITY_CLASS_NAME}}> {
+        return {{ENTITY_NAME}}sDataSource.getAll()
+    }
+}

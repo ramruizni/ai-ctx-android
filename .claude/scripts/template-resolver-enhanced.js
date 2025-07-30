@@ -39,6 +39,26 @@ function resolveTemplate(baseTemplateName, config = {}) {
                 template: 'usecase-simple.kt.template',
                 requiresCustomDeps: false
             }
+        },
+        'repository-impl': {
+            'manual-instantiation': {
+                template: 'repository-impl-manual.kt.template',
+                requiresCustomDeps: false
+            },
+            'constructor-injection': {
+                template: 'repository-impl-constructor.kt.template',
+                requiresCustomDeps: false
+            }
+        },
+        'datasource-impl': {
+            'manual-instantiation': {
+                template: 'datasource-impl-manual.kt.template',
+                requiresCustomDeps: false
+            },
+            'constructor-injection': {
+                template: 'datasource-impl-constructor.kt.template',
+                requiresCustomDeps: false
+            }
         }
     };
     
@@ -55,6 +75,12 @@ function resolveTemplate(baseTemplateName, config = {}) {
         } else if (baseTemplateName === 'usecase') {
             const pattern = architecturalPreferences.useCasePattern || 'simple-pattern';
             selectedVariant = variants[pattern];
+        } else if (baseTemplateName === 'repository-impl') {
+            const injectionPattern = architecturalPreferences.injectionPattern || 'manual-instantiation';
+            selectedVariant = variants[injectionPattern];
+        } else if (baseTemplateName === 'datasource-impl') {
+            const injectionPattern = architecturalPreferences.injectionPattern || 'manual-instantiation';
+            selectedVariant = variants[injectionPattern];
         }
     }
     

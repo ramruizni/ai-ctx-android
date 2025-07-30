@@ -18,3 +18,23 @@
 
 ## Template Resolution
 Commands use `.claude/scripts/template-resolver-enhanced.js` to select templates based on project preferences from `.claude/project-config.json`.
+
+### Template Variants by Preference
+
+**DI Module Style:**
+- `abstract-binds-provides` → `di-datasource-module-abstract.kt.template`
+- `object-provides` → `di-datasource-module-object.kt.template`
+
+**Use Case Pattern:**
+- `simple-pattern` → `usecase-simple.kt.template`
+- `command-pattern` → `usecase-command.kt.template`
+
+**Injection Pattern:**
+- `manual-instantiation` → `repository-impl-manual.kt.template`, `datasource-impl-manual.kt.template`
+- `constructor-injection` → `repository-impl-constructor.kt.template`, `datasource-impl-constructor.kt.template`
+
+**Resolution Priority:**
+1. Project-specific variant override: `{project}/.claude/templates-overrides/{variant}.kt.template`
+2. System variant template: `{system}/.claude/templates/{variant}.kt.template`
+3. Project-specific base override: `{project}/.claude/templates-overrides/{base}.kt.template`
+4. System base template: `{system}/.claude/templates/{base}.kt.template`

@@ -19,6 +19,9 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 ## Project Structure
 ```
 project/
+├── .claude/               # Project-specific configuration & customizations
+│   ├── project-config.json    # Architectural preferences
+│   └── templates-overrides/   # Custom code generation templates
 ├── app/                    # Main application module
 ├── database/              # Room database module
 ├── navigation/            # Navigation components
@@ -31,8 +34,42 @@ project/
 - Test: `./gradlew test`
 - Lint: `./gradlew lintDebug`
 
-## Architectural Conventions
-@.claude/docs/architectural-patterns.md
+## Architectural Conventions & Customization
+- **Base Patterns**: @.claude/docs/architectural-patterns.md
+- **Project Customization**: Each project can customize code generation by placing template overrides in `.claude/templates-overrides/`
+- **Configuration Schema**: @.claude/docs/project-config-schema.md
+- **Template Variables**: @.claude/docs/template-variables.md
+
+## Template Customization Workflow
+
+### Step 1: Create Project-Specific Overrides
+```bash
+# In your project directory
+mkdir -p .claude/templates-overrides
+cp path/to/system/.claude/templates/viewmodel.kt.template .claude/templates-overrides/
+# Edit .claude/templates-overrides/viewmodel.kt.template with your customizations
+```
+
+### Step 2: Configure Architectural Preferences
+```json
+// .claude/project-config.json
+{
+  "architecturalPreferences": {
+    "diModuleStyle": "object-provides",
+    "useCasePattern": "command-pattern",
+    "logging": "decorated-injection"
+  },
+  "customDependencies": [
+    "implementation(libs.company.framework)"
+  ]
+}
+```
+
+### Step 3: Generate Features with Custom Templates
+```bash
+/create-feature UserProfile
+# Uses your .claude/templates-overrides/ automatically
+```
 
 ## Starter Template
 The `starter-init` directory contains the base project template with:

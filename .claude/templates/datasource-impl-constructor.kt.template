@@ -1,0 +1,15 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.converters.convertToDomain
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.daos.{{ENTITY_CLASS_NAME}}Dao
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure.{{ENTITY_CLASS_NAME}}sDataSource
+import javax.inject.Inject
+
+class {{ENTITY_CLASS_NAME}}sDataSourceImpl @Inject constructor(
+    private val {{ENTITY_NAME}}sDao: {{ENTITY_CLASS_NAME}}Dao
+): {{ENTITY_CLASS_NAME}}sDataSource {
+    override suspend fun getAll(): List<{{ENTITY_CLASS_NAME}}> {
+        return {{ENTITY_NAME}}sDao.getAll().map { it.convertToDomain() }
+    }
+}
