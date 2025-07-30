@@ -1,0 +1,12 @@
+{
+  "packageName": "com.example.movieapptwo",
+  "projectName": "MovieAppTwo",
+  "createdAt": "2025-01-30T17:45:00Z",
+  "architecturalPreferences": {
+    "diModuleStyle": "object-provides",
+    "useCasePattern": "simple-pattern",
+    "logging": "none",
+    "injectionPattern": "manual-instantiation"
+  },
+  "customDependencies": []
+}
