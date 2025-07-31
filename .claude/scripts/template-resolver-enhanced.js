@@ -4,148 +4,81 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * Enhanced template resolver with custom dependency support
- * @param {string} baseTemplateName - Base template name (e.g., 'di-datasource-module')
- * @param {object} config - Full project configuration
+ * Unified template resolver with project-specific overrides
+ * @param {string} templateName - Template name (e.g., 'usecase', 'usecase-57blocks')
+ * @param {object} config - Project configuration
+ * @param {string} projectType - Project type (e.g., '57blocks-common') 
  * @returns {object} - Template resolution result
  */
-function resolveTemplate(baseTemplateName, config = {}) {
+function resolveTemplate(templateName, config = {}, projectType = null) {
     const { architecturalPreferences = {}, customDependencies = [] } = config;
     const overridesDir = '.claude/templates-overrides';
+    const projectSpecificDir = '.claude/project-specific-overrides';
     const baseDir = '.claude/templates';
     
-    // Template variant mapping with dependency requirements
-    const templateVariants = {
-        'di-datasource-module': {
-            'abstract-binds-provides': {
-                template: 'di-datasource-module-abstract.kt.template',
-                requiresCustomDeps: false
-            },
-            'object-provides': {
-                template: 'di-datasource-module-object.kt.template', 
-                requiresCustomDeps: false
-            }
-        },
-        'usecase': {
-            'command-pattern': {
-                template: 'usecase-command.kt.template',
-                requiresCustomDeps: true,
-                requiredDependencies: [
-                    'implementation(libs.timber)', // for logging
-                    'implementation(libs.custom.logger)' // custom logging framework
-                ]
-            },
-            'simple-pattern': {
-                template: 'usecase-simple.kt.template',
-                requiresCustomDeps: false
-            }
-        },
-        'repository-impl': {
-            'manual-instantiation': {
-                template: 'repository-impl-manual.kt.template',
-                requiresCustomDeps: false
-            },
-            'constructor-injection': {
-                template: 'repository-impl-constructor.kt.template',
-                requiresCustomDeps: false
-            }
-        },
-        'datasource-impl': {
-            'manual-instantiation': {
-                template: 'datasource-impl-manual.kt.template',
-                requiresCustomDeps: false
-            },
-            'constructor-injection': {
-                template: 'datasource-impl-constructor.kt.template',
-                requiresCustomDeps: false
-            }
-        }
-    };
+    // Streamlined template resolution (priority order)
+    const templatePaths = [
+        // 1. Local project overrides
+        path.join(overridesDir, `${templateName}.kt.template`),
+        // 2. Project-specific overrides  
+        projectType ? path.join(projectSpecificDir, projectType, `${templateName}.kt.template`) : null,
+        // 3. System defaults
+        path.join(baseDir, `${templateName}.kt.template`)
+    ].filter(Boolean);
     
-    // Determine variant based on preferences
-    let selectedVariant = null;
-    let templatePath = null;
-    
-    if (templateVariants[baseTemplateName]) {
-        const variants = templateVariants[baseTemplateName];
-        
-        if (baseTemplateName === 'di-datasource-module') {
-            const style = architecturalPreferences.diModuleStyle || 'abstract-binds-provides';
-            selectedVariant = variants[style];
-        } else if (baseTemplateName === 'usecase') {
-            const pattern = architecturalPreferences.useCasePattern || 'simple-pattern';
-            selectedVariant = variants[pattern];
-        } else if (baseTemplateName === 'repository-impl') {
-            const injectionPattern = architecturalPreferences.injectionPattern || 'manual-instantiation';
-            selectedVariant = variants[injectionPattern];
-        } else if (baseTemplateName === 'datasource-impl') {
-            const injectionPattern = architecturalPreferences.injectionPattern || 'manual-instantiation';
-            selectedVariant = variants[injectionPattern];
-        }
-    }
-    
-    // Try to resolve template path
-    if (selectedVariant) {
-        const overridePath = path.join(overridesDir, selectedVariant.template);
-        if (fs.existsSync(overridePath)) {
-            templatePath = overridePath;
-        }
-    }
-    
-    // Try base override
-    if (!templatePath) {
-        const baseOverridePath = path.join(overridesDir, `${baseTemplateName}.kt.template`);
-        if (fs.existsSync(baseOverridePath)) {
-            templatePath = baseOverridePath;
-        }
-    }
-    
-    // Fallback to base template
-    if (!templatePath) {
-        const basePath = path.join(baseDir, `${baseTemplateName}.kt.template`);
-        if (fs.existsSync(basePath)) {
-            templatePath = basePath;
-        }
-    }
+    const templatePath = templatePaths.find(p => fs.existsSync(p));
+    const templateSource = templatePath?.includes(overridesDir) ? 'local' : 
+                          templatePath?.includes(projectSpecificDir) ? 'project-specific' : 'system';
     
     if (!templatePath) {
-        throw new Error(`Template not found: ${baseTemplateName}`);
+        throw new Error(`Template not found: ${templateName}`);
     }
     
-    // Build result object
-    const result = {
+    return {
         templatePath,
-        templateVariant: selectedVariant ? Object.keys(templateVariants[baseTemplateName]).find(
-            key => templateVariants[baseTemplateName][key] === selectedVariant
-        ) : 'base',
-        requiresCustomDependencies: selectedVariant?.requiresCustomDeps || false,
-        requiredDependencies: selectedVariant?.requiredDependencies || [],
-        projectCustomDependencies: customDependencies
+        templateSource,
+        dependencies: getProjectSpecificDependencies(projectType, customDependencies),
+        projectType
     };
-    
-    return result;
 }
 
 /**
- * Gets all dependencies needed for a template
- * @param {object} templateResult - Result from resolveTemplate
+ * Get project-specific dependencies
+ * @param {string} projectType - Project type (e.g., '57blocks-common')
+ * @param {string[]} customDependencies - Additional custom dependencies
  * @returns {string[]} - Array of dependency strings
  */
-function getAllDependencies(templateResult) {
-    const deps = new Set();
+function getProjectSpecificDependencies(projectType, customDependencies = []) {
+    const projectDependencies = {
+        '57blocks-common': [
+            'implementation(libs.sunshine.shared.libraries.base.domain)',
+            'implementation(libs.sunshine.shared.libraries.eventflow)',
+            'implementation(libs.kotlinx.coroutines.core)'
+        ],
+        'sunshine-birthdays': [
+            'implementation(libs.sunshine.shared.libraries.base.domain)',
+            'implementation(libs.sunshine.shared.libraries.eventflow)',
+            'implementation(libs.sunshine.shared.libraries.keyvaluestorage)',
+            'implementation(libs.kotlinx.coroutines.core)'
+        ],
+        'sunshine-photos': [
+            'implementation(libs.sunshine.shared.libraries.base.domain)',
+            'implementation(libs.sunshine.shared.libraries.eventflow)', 
+            'implementation(libs.sunshine.shared.libraries.models)',
+            'implementation(libs.kotlinx.coroutines.core)'
+        ],
+        'dazzle': [
+            'implementation(libs.sunshine.shared.libraries.base.domain)',
+            'implementation(libs.sunshine.shared.libraries.eventflow)',
+            'implementation(libs.sunshine.shared.libraries.keyvaluestorage)',
+            'implementation(libs.kotlinx.coroutines.core)'
+        ]
+    };
     
-    // Add template-specific required dependencies
-    if (templateResult.requiredDependencies) {
-        templateResult.requiredDependencies.forEach(dep => deps.add(dep));
-    }
-    
-    // Add project custom dependencies
-    if (templateResult.projectCustomDependencies) {
-        templateResult.projectCustomDependencies.forEach(dep => deps.add(dep));
-    }
-    
-    return Array.from(deps);
+    const baseDependencies = projectDependencies[projectType] || [];
+    return [...baseDependencies, ...customDependencies];
 }
+
 
 /**
  * Loads project configuration
@@ -180,25 +113,26 @@ function loadProjectConfig() {
 if (require.main === module) {
     const templateName = process.argv[2];
     const outputFormat = process.argv[3] || 'path'; // 'path', 'json', 'deps'
+    const projectType = process.argv[4]; // Optional project type
     
     if (!templateName) {
-        console.error('Usage: node template-resolver-enhanced.js <template-name> [output-format]');
+        console.error('Usage: node template-resolver-enhanced.js <template-name> [output-format] [project-type]');
         console.error('Output formats: path (default), json, deps');
+        console.error('Project types: 57blocks-common, sunshine-birthdays, sunshine-photos, dazzle');
         process.exit(1);
     }
     
     try {
         const config = loadProjectConfig();
-        const result = resolveTemplate(templateName, config);
+        const result = resolveTemplate(templateName, config, projectType);
         
         switch (outputFormat) {
             case 'json':
                 console.log(JSON.stringify(result, null, 2));
                 break;
             case 'deps':
-                const deps = getAllDependencies(result);
-                console.log(deps.join('\n'));
-                break;
+                console.log(result.dependencies.join('\n'));
+                break; 
             case 'path':
             default:
                 console.log(result.templatePath);
@@ -210,4 +144,4 @@ if (require.main === module) {
     }
 }
 
-module.exports = { resolveTemplate, getAllDependencies, loadProjectConfig };
+module.exports = { resolveTemplate, getProjectSpecificDependencies, loadProjectConfig };

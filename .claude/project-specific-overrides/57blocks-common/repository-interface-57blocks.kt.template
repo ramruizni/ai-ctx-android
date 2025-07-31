@@ -1,0 +1,11 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain
+
+import com.lumilabs.android.basedomain.usecases.UseCaseResult
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+
+interface {{ENTITY_CLASS_NAME}}sRepository {
+    suspend fun getAll{{ENTITY_CLASS_NAME}}s(): UseCaseResult<List<{{ENTITY_CLASS_NAME}}>>
+    suspend fun get{{ENTITY_CLASS_NAME}}ById(id: String): UseCaseResult<{{ENTITY_CLASS_NAME}}?>
+    suspend fun save{{ENTITY_CLASS_NAME}}({{ENTITY_NAME}}: {{ENTITY_CLASS_NAME}}): UseCaseResult<{{ENTITY_CLASS_NAME}}>
+    suspend fun delete{{ENTITY_CLASS_NAME}}(id: String): UseCaseResult<Unit>
+}

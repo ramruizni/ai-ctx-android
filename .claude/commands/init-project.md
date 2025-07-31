@@ -1,20 +1,30 @@
-# Initialize New Android Project
+-  # Initialize New Android Project
 
-Initialize a new Android project from the starter template with custom project name and package.
+Initialize a new Android project from the starter template with support for creating projects anywhere on your system while leveraging all templates architectural patterns.
 
 ## Usage
 ```
-/init-project <ProjectName> <PackageName>
+/init-project <ProjectName> <PackageName> [--target <destination-path>]
 ```
 
 **Parameters:**
 - `ProjectName`: Name for your project directory (e.g., "PlanetsApp", "MyAwesomeApp")
 - `PackageName`: Android package name (e.g., "com.example.planetsapp", "com.company.myapp")
+- `--target`: Optional destination path where project should be created
 
 **Examples:**
 ```bash
-/init-project PlanetsApp com.example.planetsapp
-/init-project TaskManager com.company.taskmanager
+# Create in parent directory of ai-ctx-android
+/init-project PlanetsApp com.example.planetsapp --target ../
+
+# Create in specific location
+/init-project TaskManager com.company.taskmanager --target ~/AndroidProjects/
+
+# Create in current directory (if not in ai-ctx-android)
+/init-project MyApp com.example.myapp
+
+# Default behavior (creates in ai-ctx-android parent)
+/init-project TestApp com.example.testapp
 ```
 
 ## Prerequisites
@@ -31,30 +41,60 @@ If you haven't run `/check-prerequisites`, do that first for initial setup.
 
 ## Workflow
 
-### Step 1: Copy and Rename Project
+### Step 1: Destination Resolution and Validation
 I will:
-- **Copy** (not move) the `starter-init` directory to a new directory with your project name
-- **Preserve** the original `starter-init` directory - it must never be deleted or moved
-- Navigate to the new project directory
+- **Resolve target path**: Determine where the project should be created
+  - If `--target` specified: Use that path
+  - If not specified and working from ai-ctx-android: Create in parent directory (`../`)
+  - If not specified and working elsewhere: Create in current directory
+- **Create destination directory**: Ensure target directory exists
+- **Validate permissions**: Check write access to destination
 
-**IMPORTANT**: The `starter-init` directory must always remain intact as the template source. Use `cp -r` or equivalent copy operations, never `mv` or rename operations that would remove the original.
+### Step 2: Project Creation with Path Management
+I will:
+- **Copy starter template**: Copy `starter-init` to `{destination}/{ProjectName}`
+- **Navigate to new project**: Change to the new project directory for operations
+- **Initialize Claude configuration**: Create `.claude/` directory with:
+  - `project-config.json` with project-specific settings
+  - `scripts/` directory with essential scripts copied from ai-ctx-android
+  - Template override directory structure
 
-### Step 2: Replace Package Structure
+### Step 3: Template and Configuration Setup
+I will:
+- **Copy essential scripts**: Copy template resolver and project manager from ai-ctx-android
+- **Create project config**: Generate `.claude/project-config.json` with:
+  ```json
+  {
+    "packageName": "your.package.name",
+    "projectName": "YourProject",
+    "createdAt": "2025-01-31T...",
+    "aiCtxAndroidVersion": "git-abc123",
+    "architecturalPreferences": {
+      "diModuleStyle": "object-provides",
+      "useCasePattern": "simple-pattern",
+      "logging": "none",
+      "injectionPattern": "manual-instantiation"
+    },
+    "customDependencies": []
+  }
+  ```
+
+### Step 4: Package Structure Replacement
 I will:
 - Replace all occurrences of `com.example.starterdemo` with your new package name
 - Create the new package directory structure (e.g., `com/company/myapp`)
 - Move files to the correct package directories
 - Update all import statements and references
 
-### Step 3: Replace Project References
+### Step 5: Project References Update
 I will:
 - Replace all occurrences of `starterdemo` with your project name (lowercase)
 - Replace all occurrences of `StarterDemo` with your project name (PascalCase)
 - Update database names, class names, and other references
 - Update gradle configuration files
 
-### Step 4: Gradle Build Verification
-I will run comprehensive gradle validation:
+### Step 6: Comprehensive Build Validation
+I will run validation from the new project directory:
 
 **Build Validation:**
 - `./gradlew clean build` - Full clean build to ensure compilation success
@@ -66,6 +106,12 @@ I will run comprehensive gradle validation:
 - Confirm all references have been updated
 - Check gradle sync completed successfully
 - Validate Hilt dependency injection setup
+- Test Claude configuration and script integration
+
+**Path Validation:**
+- Verify project is created in correct location
+- Confirm all file paths are correct for the new location
+- Test that build works from new location
 
 **Failure Handling:**
 - If any gradle command fails, I will analyze the errors
@@ -73,41 +119,80 @@ I will run comprehensive gradle validation:
 - Re-run validation until all checks pass
 - Report any unresolvable issues for manual review
 
-## What gets replaced:
-- Package names: `com.example.starterdemo` → your package name
-- Class references: `StarterDemo` → your project name
-- Database names: `DemoDatabase` → `{ProjectName}Database`
-- Directory structures to match new package name
-- Gradle project configurations
+## Path Resolution Logic
 
-## Benefits of This Approach
+### Default Behavior
+- **From ai-ctx-android**: Creates project in `../ProjectName` (parent directory)
+- **From other directories**: Creates project in `./ProjectName` (current directory)
 
-**Fast Project Creation**: No environment checking - assumes setup is complete
-**Reliable**: Dependencies on pre-configured environment via `/check-prerequisites`
-**Focused**: Single responsibility - just create projects
-**Repeatable**: Create multiple projects quickly once environment is set up
+### With --target Parameter
+- **Absolute path**: `/home/user/projects/` → `/home/user/projects/ProjectName`
+- **Relative path**: `../AndroidProjects/` → resolves relative to current directory
+- **Tilde expansion**: `~/AndroidProjects/` → expands to user home directory
 
-## Project Creation Flow
-
-1. **One-time setup**: `/check-prerequisites` (once per machine)
-2. **Fast project creation**: `/init-project ProjectName com.package.name` (as many times as needed)
+### Directory Creation
+- Creates parent directories as needed (`mkdir -p` behavior)
+- Validates write permissions before starting
+- Provides clear error messages if path issues occur
 
 ## What Gets Created
 
 Your new project will have:
-- ✅ Clean Architecture + MVVM structure
-- ✅ Jetpack Compose UI framework
-- ✅ Room database with correct naming
-- ✅ Hilt dependency injection
-- ✅ Navigation Compose setup
-- ✅ Custom Gradle conventions
-- ✅ Correct package structure
-- ✅ Platform-specific SDK configuration (inherited from starter-init)
+- ✅ **Clean Architecture + MVVM structure** with proper module organization
+- ✅ **Jetpack Compose UI framework** with theme and navigation setup
+- ✅ **Room database** with correct naming and configuration
+- ✅ **Hilt dependency injection** with proper module structure
+- ✅ **Navigation Compose setup** with route definitions
+- ✅ **Custom Gradle conventions** for consistent builds
+- ✅ **Correct package structure** matching your specified package name
+- ✅ **Claude integration** with project-specific configuration
+- ✅ **Template override capability** for project-specific customizations
+- ✅ **Build validation** ensuring everything compiles and runs
 
-## Next Steps
+## Project Independence
 
-After successful project creation:
-- `cd ProjectName && ./gradlew buildDebug` to build
-- Use `/create-feature` to add new features
-- Use `/setup-db` to configure database entities
-- Use `/setup-navigation` to add navigation flows
+Each created project becomes fully independent:
+- **Self-contained**: All necessary scripts and templates copied
+- **Customizable**: Can override templates in project's `.claude/templates-overrides/`
+- **Trackable**: Maintains reference to ai-ctx-android version used
+- **Updatable**: Can sync with ai-ctx-android improvements when needed
+
+## Integration with Other Commands
+
+After project creation, all other commands work seamlessly:
+- **From ai-ctx-android**: Use `--target /path/to/your/project` with any command
+- **From project directory**: Commands work directly without target parameter
+- **Template resolution**: Automatically uses project overrides when available
+
+## Next Steps After Creation
+
+1. **Navigate to your project**: `cd /path/to/ProjectName`
+2. **Verify build**: `./gradlew buildDebug`
+3. **Create features**: Use `/create-feature` (with --target if working from ai-ctx-android)
+4. **Customize templates**: Place overrides in `.claude/templates-overrides/`
+5. **Configure preferences**: Edit `.claude/project-config.json`
+
+## Benefits
+
+- **Flexible location**: Create projects anywhere on your system
+- **Centralized templates**: Leverage ai-ctx-android's refined templates
+- **Project independence**: Each project becomes self-contained
+- **Consistent quality**: Same high-quality code generation everywhere
+- **Easy management**: Work on multiple projects from single ai-ctx-android instance
+
+## Error Handling and Recovery
+
+### Common Issues and Solutions
+- **Permission errors**: Clear guidance on directory permissions
+- **Path resolution failures**: Detailed error messages with suggested fixes
+- **Build failures**: Comprehensive error analysis and automated fixes
+- **Template issues**: Fallback mechanisms and clear error reporting
+
+### Validation Failures
+If any step fails:
+1. **Detailed error analysis**: Identify root cause of failure
+2. **Automated fixes**: Attempt to resolve common issues automatically
+3. **Manual intervention guidance**: Clear steps for manual resolution
+4. **Rollback capability**: Clean up partial creation on failure
+
+Ready to create a new Android project? Provide the project name, package name, and optional destination path!

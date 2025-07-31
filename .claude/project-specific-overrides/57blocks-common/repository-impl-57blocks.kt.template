@@ -1,0 +1,27 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure
+
+import com.lumilabs.android.basedomain.usecases.UseCaseResult
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}sRepository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.infrastructure.{{ENTITY_CLASS_NAME}}sDataSource
+
+class {{ENTITY_CLASS_NAME}}sRepositoryImpl(
+    private val {{ENTITY_NAME}}sDataSource: {{ENTITY_CLASS_NAME}}sDataSource
+) : {{ENTITY_CLASS_NAME}}sRepository {
+
+    override suspend fun getAll{{ENTITY_CLASS_NAME}}s(): UseCaseResult<List<{{ENTITY_CLASS_NAME}}>> {
+        return {{ENTITY_NAME}}sDataSource.getAll{{ENTITY_CLASS_NAME}}s()
+    }
+
+    override suspend fun get{{ENTITY_CLASS_NAME}}ById(id: String): UseCaseResult<{{ENTITY_CLASS_NAME}}?> {
+        return {{ENTITY_NAME}}sDataSource.get{{ENTITY_CLASS_NAME}}ById(id)
+    }
+
+    override suspend fun save{{ENTITY_CLASS_NAME}}({{ENTITY_NAME}}: {{ENTITY_CLASS_NAME}}): UseCaseResult<{{ENTITY_CLASS_NAME}}> {
+        return {{ENTITY_NAME}}sDataSource.save{{ENTITY_CLASS_NAME}}({{ENTITY_NAME}})
+    }
+
+    override suspend fun delete{{ENTITY_CLASS_NAME}}(id: String): UseCaseResult<Unit> {
+        return {{ENTITY_NAME}}sDataSource.delete{{ENTITY_CLASS_NAME}}(id)
+    }
+}

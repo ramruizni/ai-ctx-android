@@ -11,10 +11,16 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 
 ## Available Commands
 - `/check-prerequisites` - Verify and configure development environment (run once)
-- `/init-project` - Initialize new project from starter template
-- `/create-feature` - Create complete feature with all layers
-- `/setup-db` - Setup/update database module
-- `/setup-navigation` - Create navigation routes and graphs
+- `/init-project` - Initialize new project anywhere on your system (supports `--target` parameter)
+- `/create-feature` - Create complete feature in any project (supports `--target` parameter)
+- `/setup-db` - Setup/update database module in any project (supports `--target` parameter) 
+- `/setup-navigation` - Create navigation routes and graphs in any project (supports `--target` parameter)
+
+## Cross-Project Capabilities
+- **Flexible location**: Create and manage projects anywhere on your system
+- **Automatic detection**: Commands detect target project when working in project directories
+- **Template inheritance**: Projects inherit ai-ctx-android's refined templates with override capability
+- **Self-contained projects**: Created projects become independent with their own `.claude/` configuration
 
 ## Project Structure
 ```

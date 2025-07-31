@@ -1,0 +1,10 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.commands
+
+import com.lumilabs.android.basedomain.usecases.UseCaseCommand
+
+data class Get{{ENTITY_CLASS_NAME}}ByIdCommand(
+    val id: String
+) : UseCaseCommand() {
+    override val logSafeToString: String
+        get() = "Get{{ENTITY_CLASS_NAME}}ByIdCommand(id=$id)"
+}

@@ -1,265 +1,231 @@
-# Create New Feature
+# Create Feature
 
-Create a complete feature following Clean Architecture with MVVM pattern, including database layer, use cases, dependency injection, navigation, and UI components.
+Create a complete feature following Clean Architecture with MVVM pattern in any Android project, leveraging ai-ctx-android's refined templates and architectural patterns.
 
 ## Usage
 ```
-/create-feature [feature-name]
+/create-feature [feature-name] [--target <project-path>]
 ```
+
+**Parameters:**
+- `feature-name`: Name of the feature to create (e.g., "UserProfile", "Movie", "Task")
+- `--target`: Optional path to target Android project (if not specified, uses current directory)
+
+**Examples:**
+```bash
+# Create feature in external project from ai-ctx-android
+/create-feature UserProfile --target ~/AndroidProjects/MyApp
+
+# Create feature in current project (when working in project directory)
+/create-feature Movie
+
+# Create feature with relative path
+/create-feature Task --target ../SomeOtherApp
+
+# Interactive mode (asks for target if ambiguous)
+/create-feature LoginFlow
+```
+
+## Project Detection
+
+### Automatic Target Resolution
+I will automatically detect the target project using this logic:
+
+1. **Explicit target parameter**: Use `--target` path if provided
+2. **Current directory check**: If working in an Android project directory, use current directory
+3. **Interactive prompt**: If ambiguous, ask for target project path
+4. **Validation**: Ensure target is a valid Android project with proper structure
+
+### Project Validation
+Before creating features, I validate:
+- ✅ **Android project structure**: `build.gradle.kts`, `settings.gradle.kts`, `app/` module
+- ✅ **Gradle files**: Proper gradle wrapper and configuration
+- ✅ **Package structure**: Valid Android package structure in `app/src/main/`
+- ✅ **Claude compatibility**: Checks for or creates `.claude/` configuration
 
 ## Workflow
 
-I will guide you through creating a complete feature using our established architecture patterns.
-
-### Step 1: Feature Analysis
+### Step 1: Project Context Analysis
 I will:
-- Ask for the feature name and description
-- Analyze the feature requirements
-- Determine if database persistence is needed
-- Identify the main entity/model for this feature
+- **Detect target project**: Resolve project path using detection logic
+- **Validate project structure**: Ensure target is valid Android project
+- **Load project configuration**: Read `.claude/project-config.json` or create if missing
+- **Analyze existing modules**: Understand current project structure and dependencies
 
-### Step 2: Module Structure Creation
-I will create the required Gradle modules following our architecture:
-
-**Data Entity Modules:**
-- `:entity-name:domain` - Pure Kotlin module with models, use cases, repository interfaces
-- `:entity-name:infrastructure` - Repository implementations 
-- `:entity-name:datasource` - Room DAOs, DbDtos, and database access
-
-**Feature Modules:**
-- `:features:feature-name:view` - Composable screens and UI components
-- `:features:feature-name:viewmodel` - ViewModels and UI state management
-
-### Step 3: Gradle Configuration Setup
-I will configure each module with appropriate plugins and dependencies:
-
-**Domain Module** (`:entity-name:domain`):
-```kotlin
-plugins {
-    alias(libs.plugins.starterdemo.jvm.library)
-    alias(libs.plugins.starterdemo.hilt)
-}
-```
-
-**Infrastructure Module** (`:entity-name:infrastructure`):
-```kotlin
-plugins {
-    alias(libs.plugins.starterdemo.jvm.library)
-    alias(libs.plugins.starterdemo.hilt)
-}
-dependencies {
-    implementation(project(":entity-name:domain"))
-}
-```
-
-**Datasource Module** (`:entity-name:datasource`):
-```kotlin
-plugins {
-    alias(libs.plugins.starterdemo.android.library)
-    alias(libs.plugins.starterdemo.android.room)
-    alias(libs.plugins.starterdemo.hilt)
-}
-dependencies {
-    implementation(project(":entity-name:domain"))
-    implementation(project(":entity-name:infrastructure"))
-    implementation(libs.room.common)
-}
-```
-
-**View Module** (`:features:feature-name:view`):
-```kotlin
-plugins {
-    alias(libs.plugins.starterdemo.arch.view)
-}
-dependencies {
-    implementation(project(":entity-name:domain"))
-    implementation(project(":features:feature-name:viewmodel"))
-}
-```
-
-**ViewModel Module** (`:features:feature-name:viewmodel`):
-```kotlin
-plugins {
-    alias(libs.plugins.starterdemo.arch.viewmodel)
-}
-dependencies {
-    implementation(project(":entity-name:domain"))
-}
-```
-
-### Step 4: Settings and Navigation Updates
-I will update:
-- `settings.gradle.kts` to include all new modules
-- `:navigation` module dependencies to include new view and viewmodel modules
-
-### Step 5: Database Setup (if needed)
-If the feature requires data persistence, I will:
-- Check if database module exists, if not run `/setup-db`
-- Create the entity class with Room annotations
-- Create/update the DAO interface
-- Update the database class to include new entity and DAO
-
-### Step 6: Create Domain Layer
-I will create:
-- **Model/Domain Entity**: Pure Kotlin data class representing business logic
-- **Repository Interface**: Contract for data operations
-- **Use Case(s)**: Business logic operations (Get, Create, Update, Delete as needed)
-
-### Step 7: Create Data Layer
-I will create:
-- **Data Source Interface**: Contract for data access
-- **Data Source Implementation**: Room database implementation
-- **Repository Implementation**: Maps between domain and data layers
-
-### Step 8: Dependency Injection Setup
-I will create Hilt modules in the `:app` module under `di/modules/` based on your `injectionPattern` preference:
-
-#### Manual Instantiation Pattern (Default)
-**DataSource Module**:
-- `{Entity}DataSourceModule.kt` - Provides DAO and manually instantiated DataSource
-- Uses `@Provides` methods with explicit constructor calls
-
-**Infrastructure Module**:
-- `{Entity}InfrastructureModule.kt` - Provides manually instantiated Repository
-- Uses `@Provides` methods with explicit constructor calls
-
-**Domain Module**:
-- `{Entity}DomainModule.kt` - Provides Use Cases with explicit instantiation
-
-#### Constructor Injection Pattern
-**DataSource Module**:
-- `{Entity}DataSourceModule.kt` - Provides DataSource with `@Inject` constructors
-- Uses `@Provides` methods (no `@Binds` annotations), Hilt handles instantiation via `@Inject`
-
-**Infrastructure Module**:
-- `{Entity}InfrastructureModule.kt` - Provides Repository with `@Inject` constructors
-- Uses `@Provides` methods (no `@Binds` annotations), Hilt handles instantiation via `@Inject`
-
-**Database Module** (if first entity):
-- `DatabaseModule.kt` - Provides Room database instance
-- Uses `@Singleton` scope and `@ApplicationContext`
-
-**Note**: ViewModels always use `@HiltViewModel` + `@Inject` regardless of pattern.
-
-All modules use `@InstallIn(SingletonComponent::class)` and `@Singleton` scope for consistency.
-
-**DI Validation:**
-After creating all DI modules, I will run:
-- `./gradlew build` - Verify DI setup compiles correctly
-- Fix any Hilt compilation errors or missing bindings
-- Ensure dependency graph is properly configured
-
-### Step 9: Navigation Setup
+### Step 2: Feature Analysis with Context Awareness
 I will:
-- Determine the screen flow name (may differ from entity name)
-- Create route definitions for the screen flow
-- Update/create navigation graphs for the screen flow
-- Integrate with existing root navigation
+- **Gather feature requirements**: Feature name, description, and properties
+- **Analyze target project architecture**: Understand existing patterns and modules
+- **Determine naming conventions**: Follow project's existing naming patterns
+- **Plan module structure**: Design modules that integrate with existing project
 
-### Step 10: Presentation Layer
-I will create:
-- **ViewModel**: State management and use case orchestration
-- **UI State**: Data classes for screen states
-- **Composable Screen(s)**: UI implementation
-- Wire up ViewModel with dependency injection
+### Step 3: Template Resolution Strategy
+I will use templates in this priority order:
+1. **Target project overrides**: `{target-project}/.claude/templates-overrides/`
+2. **ai-ctx-android templates**: High-quality refined templates from ai-ctx-android
+3. **System fallback**: Default system templates as last resort
 
-### Step 11: Integration and Final Verification
-I will:
-- Update navigation to include new feature
-- Wire up all components end-to-end
+This ensures:
+- **Project-specific customizations** take precedence
+- **High-quality patterns** from ai-ctx-android are used
+- **Consistent architecture** across all generated code
 
-**Comprehensive Build Validation:**
-- `./gradlew clean build` - Full clean build to ensure all modules compile
-- `./gradlew lintDebug` - Run lint checks on all new code
-- `./gradlew test` - Execute unit tests to verify functionality
-- `./gradlew app:assembleDebug` - Verify app builds successfully with new feature
+### Step 4: Module Structure Creation (Target Project)
+I will create modules in the target project following its architecture:
 
-**Integration Verification:**
-- Verify dependency injection setup works correctly
-- Test navigation flow to new feature screens
-- Validate database operations (if applicable)
-- Check UI component rendering and state management
+**Data Entity Modules** (in target project):
+- `{target}/:entity-name:domain` - Pure Kotlin module with models, use cases, repository interfaces
+- `{target}/:entity-name:infrastructure` - Repository implementations 
+- `{target}/:entity-name:datasource` - Room DAOs, DbDtos, and database access
 
-**Error Handling:**
-- If any validation fails, I will analyze and fix issues
-- Resolve compilation errors, dependency conflicts, or integration problems  
-- Re-run validation steps until all checks pass
-- Provide summary of any remaining manual verification needed
+**Feature Modules** (in target project):
+- `{target}/:features:feature-name:view` - Composable screens and UI components
+- `{target}/:features:feature-name:viewmodel` - ViewModels and UI state management
 
-## Architecture Pattern
-Each feature follows this structure:
+### Step 5: Gradle Configuration with Project Context
+I will configure each module using the target project's conventions:
+
+**Package Name Resolution**: Use target project's package name from configuration
+**Dependency Alignment**: Match target project's dependency versions and patterns
+**Build Convention Integration**: Use target project's gradle conventions
+
+### Step 6: Settings and Navigation Updates (Target Project)
+I will update the target project files:
+- **Settings Update**: Modify `{target}/settings.gradle.kts` to include new modules
+- **Navigation Integration**: Update `{target}/navigation` module dependencies
+- **App Module Integration**: Connect new modules to main app module
+
+### Step 7: Database Setup with Project Integration (if needed)
+If the feature requires data persistence:
+- **Detect existing database**: Check target project's database setup
+- **Integrate with existing**: Add entities to existing database or create new setup
+- **Update database class**: Modify target project's database configuration
+- **Maintain consistency**: Follow target project's database patterns
+
+### Step 8: Domain Layer Creation (Target Project Context)
+I will create in target project using its patterns:
+- **Model/Domain Entity**: Following target project's model conventions
+- **Repository Interface**: Consistent with target project's repository patterns
+- **Use Cases**: Using target project's architectural preferences (simple vs command pattern)
+
+### Step 9: Data Layer Implementation (Target Project)
+I will create in target project:
+- **Data Source Interface**: Following target project's data access patterns
+- **Data Source Implementation**: Room database implementation matching project style
+- **Repository Implementation**: Maps between domain and data layers using project conventions
+
+### Step 10: Dependency Injection with Project Alignment
+I will create Hilt modules in target project's `:app/di/modules/` directory:
+
+**Injection Pattern Detection**: Use target project's `injectionPattern` preference:
+- **Manual Instantiation**: Generate `@Provides` methods with explicit constructor calls
+- **Constructor Injection**: Use `@Inject` constructors with `@Provides` methods
+
+**Module Integration**: 
+- Create modules that integrate with existing DI setup
+- Follow target project's naming and organizational conventions
+- Ensure compatibility with existing dependency graph
+
+### Step 11: Navigation Setup (Target Project)
+I will integrate with target project's navigation:
+- **Route Integration**: Add routes to existing navigation structure
+- **Graph Updates**: Integrate with existing navigation graphs
+- **Navigator Pattern**: Follow target project's navigation patterns
+
+### Step 12: Presentation Layer (Target Project Context)
+I will create UI components using target project's patterns:
+- **ViewModel**: State management following project's architectural preferences
+- **UI State**: Data classes consistent with project's state management patterns
+- **Composable Screens**: UI implementation using project's compose patterns and theme
+
+### Step 13: Integration and Validation (Target Project)
+I will perform comprehensive validation in the target project:
+
+**Build Validation** (in target project directory):
+- `./gradlew clean build` - Full clean build with new modules
+- `./gradlew lintDebug` - Lint checks on all new code
+- `./gradlew test` - Unit tests validation
+- `./gradlew app:assembleDebug` - Full app assembly test
+
+**Integration Verification**:
+- **Dependency injection**: Verify all modules properly wired
+- **Navigation flow**: Test navigation to new feature screens  
+- **Database operations**: Validate database integration (if applicable)
+- **UI rendering**: Check composable screens and state management
+
+**Cross-Project Quality Assurance**:
+- **Code style consistency**: Ensure generated code matches target project patterns
+- **Architectural alignment**: Verify feature follows target project's architecture
+- **Integration seamlessness**: Confirm feature integrates naturally with existing code
+
+## Template Resolution Benefits
+
+### High-Quality Code Generation
+- **Refined templates**: Leverage ai-ctx-android's battle-tested templates
+- **Project customization**: Respect target project's specific overrides
+- **Consistent quality**: Same high standards across all projects
+
+### Architectural Consistency
+- **Pattern preservation**: Maintain target project's architectural decisions
+- **Convention adherence**: Follow target project's coding conventions
+- **Integration quality**: Seamless integration with existing codebase
+
+## Multi-Project Support
+
+### Working from ai-ctx-android
+```bash
+# Create features in different projects from single location
+/create-feature UserAuth --target ~/Projects/ECommerceApp
+/create-feature PhotoGallery --target ~/Projects/PhotoApp
+/create-feature TaskManager --target ~/Projects/ProductivityApp
 ```
-feature/
-├── data/
-│   ├── datasource/
-│   ├── repository/
-│   └── entity/
-├── domain/
-│   ├── model/
-│   ├── repository/
-│   └── usecase/
-├── di/
-├── navigation/
-└── presentation/
-    ├── viewmodel/
-    └── screen/
+
+### Working from Project Directories
+```bash
+# Navigate to project and create features directly
+cd ~/Projects/ECommerceApp
+/create-feature PaymentFlow
+
+cd ~/Projects/PhotoApp  
+/create-feature ImageEditor
 ```
 
-## Template Variables Reference
-When creating custom template overrides, use these standardized variables:
-- `{{PACKAGE_NAME}}` - Base package from project config (e.g., "com.company.myapp")
-- `{{ENTITY_NAME}}` - Entity name lowercase (e.g., "user")
-- `{{ENTITY_CLASS_NAME}}` - Entity class PascalCase (e.g., "User")
-- `{{FEATURE_NAME}}` - Feature name lowercase (e.g., "login")
-- `{{FEATURE_CLASS_NAME}}` - Feature class PascalCase (e.g., "Login")
-- `{{TABLE_NAME}}` - Database table plural (e.g., "users")
-- `{{PROPERTIES}}` - Model properties with types
-- `{{PROPERTY_MAPPINGS}}` - Property mappings for converters
+### Centralized Template Management
+- **Update once**: Improve templates in ai-ctx-android
+- **Benefit everywhere**: All projects use improved templates
+- **Override locally**: Projects can customize specific templates as needed
 
-**Custom Template Requirements:**
-- **Preserve all variables**: Your overrides must use the same `{{VARIABLE_NAME}}` placeholders
-- **Maintain package structure**: Keep expected imports and package declarations
-- **Test with all preferences**: Verify compatibility with different `architecturalPreferences`
+## Error Handling and Recovery
 
-See @.claude/docs/template-variables.md for complete reference and examples.
+### Project Validation Failures
+- **Invalid project structure**: Clear guidance on requirements and fixes
+- **Missing dependencies**: Automated dependency resolution
+- **Configuration issues**: Automatic configuration creation and repair
 
-## Template Customization
+### Build Integration Failures  
+- **Gradle sync issues**: Detailed analysis and resolution steps
+- **Dependency conflicts**: Automatic conflict resolution
+- **Module integration**: Step-by-step integration verification
 
-### Project-Specific Template Overrides
-You can customize any generated code by placing template overrides in **your project's** `.claude/templates-overrides/` directory:
+### Template Resolution Issues
+- **Missing templates**: Fallback mechanisms and error reporting
+- **Template conflicts**: Clear resolution priority and override guidance
+- **Customization problems**: Validation and correction of project overrides
 
-```
-YourProject/
-├── .claude/
-│   ├── project-config.json          # Architectural preferences
-│   └── templates-overrides/         # Your custom templates
-│       ├── viewmodel.kt.template     # Custom ViewModel pattern
-│       ├── screen.kt.template        # Custom Screen composition
-│       └── di-datasource-module-object.kt.template
-└── src/
-```
+## What I'll Need From You
 
-**Template Resolution Priority:**
-1. **Your Project Override**: `{project}/.claude/templates-overrides/{template}.kt.template`
-2. **System Default**: `{system}/.claude/templates/{template}.kt.template`
+1. **Feature name** (e.g., "UserProfile", "Movie", "TaskManager")
+2. **Target project path** (if not working in project directory)
+3. **Entity properties** with types (e.g., "name: String, age: Int, email: String")
+4. **Brief description** of what the feature does
+5. **Confirmation** if entity name differs from feature name
 
-This allows you to:
-- Add company-specific frameworks and patterns
-- Customize coding standards per project
-- Include project-specific validation or business logic
-- Maintain team consistency while allowing flexibility
+## Quality Guarantees
 
-### Available Base Templates
-- **Data Layer**: entity-model, entity-dbdto, entity-dao, entity-converters, datasource-interface, datasource-impl, repository-interface, repository-impl, usecase
-- **Presentation Layer**: viewmodel, screen, navigator-interface  
-- **Navigation**: navigation-graph-route, navigation-route, navigation-navigator, navigation-graph
-- **Database**: database-update
-- **Dependency Injection**: di-database-module, di-datasource-module, di-infrastructure-module, di-domain-module
+- **Template excellence**: All code generated using refined, battle-tested templates
+- **Project integration**: Seamless integration with target project's existing architecture
+- **Build verification**: Comprehensive testing ensures everything compiles and works
+- **Pattern consistency**: Generated code follows target project's established patterns
+- **Error recovery**: Robust error handling and recovery mechanisms
 
-## What I'll need from you:
-1. **Feature name** (e.g., "demo", "login", "notifications") - will be used for both entity and feature if they match
-2. **Entity properties** with types (e.g., "firstProperty: Int, secondProperty: Float")
-3. **Brief description** of what the feature does
-4. **Confirmation** if entity name differs from feature name
-
-Ready to start? Provide the feature name and I'll begin the analysis!
+Ready to create a feature? Provide the feature name and I'll detect the target project or ask for clarification if needed!

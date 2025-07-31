@@ -1,0 +1,20 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.usecases
+
+import com.lumilabs.android.basedomain.usecases.SuspendUseCase
+import com.lumilabs.android.basedomain.usecases.UseCaseResult
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}sRepository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.commands.Get{{ENTITY_CLASS_NAME}}ByIdCommand
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+
+class Get{{ENTITY_CLASS_NAME}}ById(
+    private val {{ENTITY_NAME}}sRepository: {{ENTITY_CLASS_NAME}}sRepository
+) : SuspendUseCase<Get{{ENTITY_CLASS_NAME}}ByIdCommand, {{ENTITY_CLASS_NAME}}?>() {
+
+    override val name: String
+        get() = "Get{{ENTITY_CLASS_NAME}}ById"
+
+    override suspend fun invoke(arg: Get{{ENTITY_CLASS_NAME}}ByIdCommand): UseCaseResult<{{ENTITY_CLASS_NAME}}?> = 
+        safeCall {
+            {{ENTITY_NAME}}sRepository.get{{ENTITY_CLASS_NAME}}ById(arg.id)
+        }
+}
