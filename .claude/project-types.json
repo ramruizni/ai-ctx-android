@@ -1,0 +1,28 @@
+{
+  "default": {
+    "description": "Standard Clean Architecture Android project",
+    "architecturalPreferences": {
+      "diModuleStyle": "object-provides",
+      "useCasePattern": "simple-pattern",
+      "logging": "none",
+      "injectionPattern": "manual-instantiation"
+    },
+    "requiredDependencies": []
+  },
+  "57blocks-common": {
+    "description": "57blocks projects with basedomain architecture",
+    "architecturalPreferences": {
+      "diModuleStyle": "object-provides",
+      "useCasePattern": "command-pattern",
+      "logging": "none",
+      "injectionPattern": "manual-instantiation"
+    },
+    "requiredDependencies": [
+      "implementation(project(\":app-domainimplementations:basedomain\"))"
+    ],
+    "templateOverrides": {
+      "usecase": "usecase-command",
+      "usecase-command": "usecase-command-command"
+    }
+  }
+}

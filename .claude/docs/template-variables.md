@@ -16,8 +16,15 @@
 - `{{PROPERTIES}}` - Comma-separated properties with types
 - `{{PROPERTY_MAPPINGS}}` - Property mapping assignments
 
+## Project Types
+Available in `.claude/project-types.json`:
+- **`default`**: Standard Clean Architecture (simple-pattern, manual-instantiation)
+- **`57blocks-common`**: 57blocks projects (command-pattern, basedomain dependency)
+
+Usage: `--project-type 57blocks-common`
+
 ## Template Resolution
-Commands use `.claude/scripts/template-resolver-enhanced.js` to select templates based on project preferences from `.claude/project-config.json`.
+Commands use project type and `.claude/project-config.json` preferences to select templates.
 
 ### Template Variants by Preference
 
@@ -26,8 +33,8 @@ Commands use `.claude/scripts/template-resolver-enhanced.js` to select templates
 - `object-provides` → `di-datasource-module-object.kt.template`
 
 **Use Case Pattern:**
-- `simple-pattern` → `usecase-simple.kt.template`
-- `command-pattern` → `usecase-command.kt.template`
+- `simple-pattern` → `usecase-simple.kt.template` ✅
+- `command-pattern` → `usecase-command.kt.template` + `usecase-command-command.kt.template` ✅
 
 **Injection Pattern:**
 - `manual-instantiation` → `repository-impl-manual.kt.template`, `datasource-impl-manual.kt.template`

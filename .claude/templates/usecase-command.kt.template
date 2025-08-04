@@ -1,0 +1,19 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.usecases
+
+import com.lumilabs.android.basedomain.usecases.UseCase
+import com.lumilabs.android.basedomain.usecases.UseCaseResult
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}sRepository
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.commands.GetAll{{ENTITY_CLASS_NAME}}sCommand
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.models.{{ENTITY_CLASS_NAME}}
+import kotlinx.coroutines.flow.Flow
+
+class GetAll{{ENTITY_CLASS_NAME}}s(private val {{ENTITY_NAME}}sRepository: {{ENTITY_CLASS_NAME}}sRepository) :
+    UseCase<GetAll{{ENTITY_CLASS_NAME}}sCommand, Flow<List<{{ENTITY_CLASS_NAME}}>>>() {
+    override fun invoke(arg: GetAll{{ENTITY_CLASS_NAME}}sCommand): UseCaseResult<Flow<List<{{ENTITY_CLASS_NAME}}>>> =
+        safeCall {
+            {{ENTITY_NAME}}sRepository.getAll{{ENTITY_CLASS_NAME}}s()
+        }
+
+    override val name: String
+        get() = "GetAll{{ENTITY_CLASS_NAME}}s"
+}

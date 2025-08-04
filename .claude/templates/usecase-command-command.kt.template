@@ -1,0 +1,8 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.commands
+
+import com.lumilabs.android.basedomain.usecases.UseCaseCommand
+
+object GetAll{{ENTITY_CLASS_NAME}}sCommand : UseCaseCommand() {
+    override val logSafeToString: String
+        get() = "GetAll{{ENTITY_CLASS_NAME}}sCommand"
+}

@@ -8,6 +8,6 @@ class GetAll{{ENTITY_CLASS_NAME}}sUseCase(
     private val {{ENTITY_NAME}}sRepository: {{ENTITY_CLASS_NAME}}sRepository
 ) {
     operator fun invoke(): Flow<List<{{ENTITY_CLASS_NAME}}>> {
-        return {{ENTITY_NAME}}sRepository.getAll{{ENTITY_CLASS_NAME}}s()
+        return {{ENTITY_NAME}}sRepository.getAllSongs()
     }
 }

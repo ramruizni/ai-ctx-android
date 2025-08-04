@@ -11,10 +11,47 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 
 ## Available Commands
 - `/check-prerequisites` - Verify and configure development environment (run once)
-- `/init-project` - Initialize new project anywhere on your system (supports `--target` parameter)
-- `/create-feature` - Create complete feature in any project (supports `--target` parameter)
+- `/init-project` - Initialize new project anywhere on your system (supports `--target` and `--project-type` parameters)
+- `/create-feature` - Create complete feature in any project (supports `--target` and `--project-type` parameters)
 - `/setup-db` - Setup/update database module in any project (supports `--target` parameter) 
 - `/setup-navigation` - Create navigation routes and graphs in any project (supports `--target` parameter)
+
+## Project Types (Recommended)
+- **`default`**: Standard Clean Architecture with simple use cases
+- **`57blocks-common`**: 57blocks projects with UseCaseResult pattern and basedomain architecture
+
+### Usage Examples
+**IMPORTANT**: Run all commands from the ai-ctx-android directory to use centralized templates.
+
+#### Existing Sunshine Projects (57blocks-common)
+```bash
+# Photo management with command pattern
+/create-feature PhotoGallery --project-type 57blocks-common --target /path/to/Sunshine-Photos
+
+# Event planning with basedomain architecture  
+/create-feature EventPlanner --project-type 57blocks-common --target /path/to/Dazzle
+
+# Guest management with UseCaseResult pattern
+/create-feature GuestManagement --project-type 57blocks-common --target /path/to/Sunshine-Parties
+```
+
+#### Personal Projects (default architecture)
+```bash
+# Travel planning with simple use cases
+/create-feature TripPlanner --project-type default --target /path/to/GeYuGoApp
+
+# Movie tracking with standard Clean Architecture
+/create-feature Watchlist --project-type default --target /path/to/MoviesApp
+```
+
+#### Create New Projects
+```bash
+# New project with default templates
+/init-project FitnessTracker --project-type default --target /my/projects/FitnessTracker
+
+# New project with 57blocks architecture
+/init-project RecipeManager --project-type 57blocks-common --target /work/projects/RecipeManager
+```
 
 ## Cross-Project Capabilities
 - **Flexible location**: Create and manage projects anywhere on your system
@@ -56,25 +93,28 @@ cp path/to/system/.claude/templates/viewmodel.kt.template .claude/templates-over
 # Edit .claude/templates-overrides/viewmodel.kt.template with your customizations
 ```
 
-### Step 2: Configure Architectural Preferences
+### Step 2: Configure Project Type (Easier) 
+```bash
+# Automatically sets correct architectural preferences
+/create-feature UserProfile --project-type 57blocks-common
+```
+
+**OR** Manual Configuration:
 ```json
 // .claude/project-config.json
 {
+  "projectType": "57blocks-common",
   "architecturalPreferences": {
-    "diModuleStyle": "object-provides",
     "useCasePattern": "command-pattern",
-    "logging": "decorated-injection"
-  },
-  "customDependencies": [
-    "implementation(libs.company.framework)"
-  ]
+    "injectionPattern": "manual-instantiation"
+  }
 }
 ```
 
-### Step 3: Generate Features with Custom Templates
+### Step 3: Generate Features
 ```bash
-/create-feature UserProfile
-# Uses your .claude/templates-overrides/ automatically
+/create-feature UserProfile --project-type 57blocks-common
+# Uses correct templates automatically based on project type
 ```
 
 ## Starter Template
