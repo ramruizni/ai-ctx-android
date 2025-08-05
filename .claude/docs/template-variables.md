@@ -4,24 +4,9 @@
 - `{{PACKAGE_NAME}}` - Base package (e.g., "com.example.app")
 - `{{ENTITY_NAME}}` - Entity lowercase (e.g., "user") 
 - `{{ENTITY_CLASS_NAME}}` - Entity PascalCase (e.g., "User")
-- `{{TABLE_NAME}}` - Database table plural (e.g., "users")
 - `{{FEATURE_NAME}}` - Feature lowercase (e.g., "login")
 - `{{FEATURE_CLASS_NAME}}` - Feature PascalCase (e.g., "Login")
-
-## Database Variables
-- `{{DATABASE_CLASS_NAME}}` - Database class (e.g., "AppDatabase")
-- `{{DATABASE_VARIABLE_NAME}}` - Database variable (e.g., "appDatabase")
-
-## Property Variables
-- `{{PROPERTIES}}` - Comma-separated properties with types
-- `{{PROPERTY_MAPPINGS}}` - Property mapping assignments
-
-## Project Types
-Available in `.claude/project-types.json`:
-- **`default`**: Standard Clean Architecture (simple-pattern, manual-instantiation)
-- **`57blocks-common`**: 57blocks projects (command-pattern, basedomain dependency)
-
-Usage: `--project-type 57blocks-common`
+- `{{PROPERTIES}}` - Properties with types, property mappings
 
 ## Template Resolution
 Commands use project type and `.claude/project-config.json` preferences to select templates.

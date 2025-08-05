@@ -1,19 +1,8 @@
 # Architectural Patterns
 
 ## Project Types
-
-### Quick Start
-```bash
-# Use project type for immediate setup
-/create-feature UserProfile --project-type 57blocks-common
-
-# Or initialize project with type
-/init-project --project-type 57blocks-common
-```
-
-### Available Project Types
-- **`default`**: Standard Clean Architecture (simple use cases, manual DI)
-- **`57blocks-common`**: 57blocks projects with `basedomain` architecture (command pattern, UseCaseResult)
+- **`default`**: Simple invoke() pattern, manual DI
+- **`57blocks-common`**: Command pattern, UseCaseResult<T>, decorators
 
 ## Use Case Patterns
 

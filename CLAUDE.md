@@ -1,187 +1,67 @@
-# Android Clean Architecture Project Context
+# Android Clean Architecture Context
 
-## Project Overview
-Multi-module Android project following Clean Architecture with MVVM pattern, using:
-- **Architecture**: Clean Architecture + MVVM
-- **UI**: Jetpack Compose
-- **Database**: Room
-- **DI**: Hilt
-- **Navigation**: Navigation Compose
-- **Build**: Gradle with Kotlin DSL and build-logic conventions
+## Commands
+- `/init-project` - Initialize new project (supports `--target` and `--project-type`)
+- `/create-feature` - Create complete feature (supports `--target` and `--project-type`)
+- `/setup-db` - Setup/update database module
+- `/setup-navigation` - Create navigation components
 
-## Available Commands
-- `/check-prerequisites` - Verify and configure development environment (run once)
-- `/init-project` - Initialize new project anywhere on your system (supports `--target` and `--project-type` parameters)
-- `/create-feature` - Create complete feature in any project (supports `--target` and `--project-type` parameters)
-- `/setup-db` - Setup/update database module in any project (supports `--target` parameter) 
-- `/setup-navigation` - Create navigation routes and graphs in any project (supports `--target` parameter)
-
-## Project Types (Recommended)
+## Project Types
 - **`default`**: Standard Clean Architecture with simple use cases
-- **`57blocks-common`**: 57blocks projects with UseCaseResult pattern and basedomain architecture
+- **`57blocks-common`**: Sunshine projects with command pattern + decorators
 
-### Usage Examples
-**IMPORTANT**: Run all commands from the ai-ctx-android directory to use centralized templates.
-
-#### Existing Sunshine Projects (57blocks-common)
+## Usage (from ai-ctx-android directory)
 ```bash
-# Photo management with command pattern
-/create-feature PhotoGallery --project-type 57blocks-common --target /path/to/Sunshine-Photos
+# Sunshine projects (existing)
+/create-feature PhotoManager --project-type 57blocks-common --target /path/to/Sunshine-Photos
 
-# Event planning with basedomain architecture  
-/create-feature EventPlanner --project-type 57blocks-common --target /path/to/Dazzle
+# New projects
+/init-project AppName --project-type 57blocks-common --target /work/projects/AppName
 
-# Guest management with UseCaseResult pattern
-/create-feature GuestManagement --project-type 57blocks-common --target /path/to/Sunshine-Parties
+# Personal projects
+/create-feature TripPlanner --project-type default --target /personal/apps/TravelApp
 ```
 
-#### Personal Projects (default architecture)
-```bash
-# Travel planning with simple use cases
-/create-feature TripPlanner --project-type default --target /path/to/GeYuGoApp
+## Critical: Feature Creation Workflow
 
-# Movie tracking with standard Clean Architecture
-/create-feature Watchlist --project-type default --target /path/to/MoviesApp
+### Pre-Analysis
+1. **Dependency validation**: `node .claude/scripts/dependency-graph-analyzer.js validate-feature <path> <feature>`
+2. **Pattern detection**: `node .claude/scripts/template-override-analyzer.js analyze <path>`
+
+### Generation Order (STRICT)
+1. **Domain**: Entity, Repository interface, UseCase interface
+2. **Data**: DbDto, DAO, DataSource, Repository impl  
+3. **UseCases**: Command objects, UseCase impl with decorators
+4. **UI**: Screen, ViewModel with generic injection
+5. **DI**: Modules with decorator patterns, database dependencies
+
+### Sunshine Projects (57blocks-common) Requirements
+- **No @Inject** (except ViewModels)
+- **Decorators mandatory**: Exception + logging wrappers on all use cases  
+- **Generic injection**: `SuspendUseCase<CommandType, ResultType>` in ViewModels
+- **Database deps**: Always add `implementation(project(":feature:datasource"))` to database module
+- **Command pattern**: UseCaseCommand + UseCaseResult<T> + safeCall { }
+
+```kotlin
+// ViewModel injection (CORRECT)
+private val useCase: SuspendUseCase<GetDataCommand, List<Data>>
+
+// DI module with decorators (MANDATORY)
+return SuspendUseCaseUnexpectedExceptionHandlerDecorator(
+    decorated = SuspendUseCaseExecutionLogDecorator(decorated = useCase, ...),
+    unexpectedExceptionHandler = handler,
+)
 ```
 
-#### Create New Projects
-```bash
-# New project with default templates
-/init-project FitnessTracker --project-type default --target /my/projects/FitnessTracker
+### Module Files Generated
+- `build.gradle.kts` with dependencies
+- `.gitignore` for build artifacts  
+- `AndroidManifest.xml`
+- Clean Architecture layer structure
 
-# New project with 57blocks architecture
-/init-project RecipeManager --project-type 57blocks-common --target /work/projects/RecipeManager
-```
+## Configuration Override
+Place customizations in `{project}/.claude/templates-overrides/template-name.kt.template`
 
-## Cross-Project Capabilities
-- **Flexible location**: Create and manage projects anywhere on your system
-- **Automatic detection**: Commands detect target project when working in project directories
-- **Template inheritance**: Projects inherit ai-ctx-android's refined templates with override capability
-- **Self-contained projects**: Created projects become independent with their own `.claude/` configuration
-
-## Project Structure
-```
-project/
-├── .claude/               # Project-specific configuration & customizations
-│   ├── project-config.json    # Architectural preferences
-│   └── templates-overrides/   # Custom code generation templates
-├── app/                    # Main application module
-├── database/              # Room database module
-├── navigation/            # Navigation components
-├── build-logic/          # Gradle convention plugins
-└── [feature-modules]/    # Feature-specific modules
-```
-
-## Build Commands
-- Build: `./gradlew buildDebug`
-- Test: `./gradlew test`
-- Lint: `./gradlew lintDebug`
-
-## Architectural Conventions & Customization
-- **Base Patterns**: @.claude/docs/architectural-patterns.md
-- **Sunshine Project Patterns**: @.claude/docs/sunshine-injection-patterns.md
-- **Project Customization**: Each project can customize code generation by placing template overrides in `.claude/templates-overrides/`
-- **Configuration Schema**: @.claude/docs/project-config-schema.md
-- **Template Variables**: @.claude/docs/template-variables.md
-
-## Critical Scripts for Safe Feature Creation
-- **Dependency Analysis**: `.claude/scripts/dependency-graph-analyzer.js`
-- **Template Pattern Detection**: `.claude/scripts/template-override-analyzer.js`
-- **Cross-Project Template Resolution**: `.claude/scripts/cross-project-template-resolver.js`
-
-## Atomic Feature Creation Workflow
-
-### Phase 1: Pre-Analysis (Before Code Generation)
-1. **Entity Discovery**: Analyze existing database entities and domain models
-2. **Dependency Graph Analysis**: Map current module dependencies to prevent circular references
-   - Run `node .claude/scripts/dependency-graph-analyzer.js analyze`
-   - Validate new feature won't create cycles: `node .claude/scripts/dependency-graph-analyzer.js validate-feature <project-path> <feature-name>`
-3. **Template Override Detection**: Check project's `.claude/templates-overrides/` for custom patterns
-   - Run `node .claude/scripts/template-override-analyzer.js analyze <project-path>`
-4. **Injection Pattern Analysis**: Examine existing DI modules to understand decorator patterns
-   - **Critical for Sunshine Projects**: Must use decorator pattern with logging/exception handling
-   - See: @.claude/docs/sunshine-injection-patterns.md
-
-### Phase 2: Safe Incremental Generation
-1. **Domain Layer** (Interface Definitions):
-   - Entity/Model classes in `domain/` module
-   - Repository interfaces in `domain/` module  
-   - Use case interfaces with command/result patterns
-   
-2. **Data Layer** (Implementations):
-   - DbDto and converters in `datasource/` module
-   - DAO interfaces in `datasource/` module
-   - DataSource implementations in `datasource/` module
-   - Repository implementations in `infrastructure/` module
-
-3. **Use Case Layer**:
-   - Use case implementations with command pattern
-   - Command objects extending UseCaseCommand
-   - Result objects using UseCaseResult<T>
-
-4. **Presentation Layer**:
-   - Screen composables in `view/` module
-   - ViewModel with proper use case injection in `viewmodel/` module
-   - Navigation routes and graphs
-
-5. **DI Integration** (Critical Final Step):
-   - **MANDATORY for Sunshine Projects**: Analyze existing DI decorator patterns
-   - Generate DI modules with logging/exception decorators (see sunshine-injection-patterns.md)
-   - **CRITICAL**: Add datasource module dependency to database module: `implementation(project(":feature:datasource"))`
-   - Ensure proper dependency chain: app → infrastructure → datasource → database
-   - **ViewModels**: Inject use cases with generic type signatures: `SuspendUseCase<CommandType, ResultType>`
-
-### Phase 3: Validation & Build Safety
-- **Dependency Validation**: Verify no circular dependencies introduced
-- **Build Test**: Optional incremental build check
-- **Template Compliance**: Ensure generated code matches project patterns
-
-## Module Creation Requirements
-
-### Automatic File Generation
-- **Feature modules**: Create complete Clean Architecture structure
-- **Build files**: `build.gradle.kts` with proper dependencies
-- **GitIgnore**: Each new module gets `.gitignore` file for build artifacts
-- **Manifest**: `AndroidManifest.xml` for proper module registration
-
-## Template Customization Workflow
-
-### Step 1: Create Project-Specific Overrides
-```bash
-# In your project directory
-mkdir -p .claude/templates-overrides
-cp path/to/system/.claude/templates/viewmodel.kt.template .claude/templates-overrides/
-# Edit .claude/templates-overrides/viewmodel.kt.template with your customizations
-```
-
-### Step 2: Configure Project Type (Easier) 
-```bash
-# Automatically sets correct architectural preferences
-/create-feature UserProfile --project-type 57blocks-common
-```
-
-**OR** Manual Configuration:
-```json
-// .claude/project-config.json
-{
-  "projectType": "57blocks-common",
-  "architecturalPreferences": {
-    "useCasePattern": "command-pattern",
-    "injectionPattern": "manual-instantiation"
-  }
-}
-```
-
-### Step 3: Generate Features
-```bash
-/create-feature UserProfile --project-type 57blocks-common
-# Uses correct templates automatically based on project type
-```
-
-## Starter Template
-The `starter-init` directory contains the base project template with:
-- Basic app module with MainActivity and theme setup
-- Database module with Room configuration
-- Navigation module with root navigation host
-- Build-logic with convention plugins
-- Hilt setup for dependency injection
+## Reference Files
+- Template patterns: `.claude/docs/architectural-patterns.md`
+- Template variables: `.claude/docs/template-variables.md`
