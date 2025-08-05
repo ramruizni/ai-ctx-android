@@ -79,9 +79,70 @@ project/
 
 ## Architectural Conventions & Customization
 - **Base Patterns**: @.claude/docs/architectural-patterns.md
+- **Sunshine Project Patterns**: @.claude/docs/sunshine-injection-patterns.md
 - **Project Customization**: Each project can customize code generation by placing template overrides in `.claude/templates-overrides/`
 - **Configuration Schema**: @.claude/docs/project-config-schema.md
 - **Template Variables**: @.claude/docs/template-variables.md
+
+## Critical Scripts for Safe Feature Creation
+- **Dependency Analysis**: `.claude/scripts/dependency-graph-analyzer.js`
+- **Template Pattern Detection**: `.claude/scripts/template-override-analyzer.js`
+- **Cross-Project Template Resolution**: `.claude/scripts/cross-project-template-resolver.js`
+
+## Atomic Feature Creation Workflow
+
+### Phase 1: Pre-Analysis (Before Code Generation)
+1. **Entity Discovery**: Analyze existing database entities and domain models
+2. **Dependency Graph Analysis**: Map current module dependencies to prevent circular references
+   - Run `node .claude/scripts/dependency-graph-analyzer.js analyze`
+   - Validate new feature won't create cycles: `node .claude/scripts/dependency-graph-analyzer.js validate-feature <project-path> <feature-name>`
+3. **Template Override Detection**: Check project's `.claude/templates-overrides/` for custom patterns
+   - Run `node .claude/scripts/template-override-analyzer.js analyze <project-path>`
+4. **Injection Pattern Analysis**: Examine existing DI modules to understand decorator patterns
+   - **Critical for Sunshine Projects**: Must use decorator pattern with logging/exception handling
+   - See: @.claude/docs/sunshine-injection-patterns.md
+
+### Phase 2: Safe Incremental Generation
+1. **Domain Layer** (Interface Definitions):
+   - Entity/Model classes in `domain/` module
+   - Repository interfaces in `domain/` module  
+   - Use case interfaces with command/result patterns
+   
+2. **Data Layer** (Implementations):
+   - DbDto and converters in `datasource/` module
+   - DAO interfaces in `datasource/` module
+   - DataSource implementations in `datasource/` module
+   - Repository implementations in `infrastructure/` module
+
+3. **Use Case Layer**:
+   - Use case implementations with command pattern
+   - Command objects extending UseCaseCommand
+   - Result objects using UseCaseResult<T>
+
+4. **Presentation Layer**:
+   - Screen composables in `view/` module
+   - ViewModel with proper use case injection in `viewmodel/` module
+   - Navigation routes and graphs
+
+5. **DI Integration** (Critical Final Step):
+   - **MANDATORY for Sunshine Projects**: Analyze existing DI decorator patterns
+   - Generate DI modules with logging/exception decorators (see sunshine-injection-patterns.md)
+   - **CRITICAL**: Add datasource module dependency to database module: `implementation(project(":feature:datasource"))`
+   - Ensure proper dependency chain: app → infrastructure → datasource → database
+   - **ViewModels**: Inject use cases with generic type signatures: `SuspendUseCase<CommandType, ResultType>`
+
+### Phase 3: Validation & Build Safety
+- **Dependency Validation**: Verify no circular dependencies introduced
+- **Build Test**: Optional incremental build check
+- **Template Compliance**: Ensure generated code matches project patterns
+
+## Module Creation Requirements
+
+### Automatic File Generation
+- **Feature modules**: Create complete Clean Architecture structure
+- **Build files**: `build.gradle.kts` with proper dependencies
+- **GitIgnore**: Each new module gets `.gitignore` file for build artifacts
+- **Manifest**: `AndroidManifest.xml` for proper module registration
 
 ## Template Customization Workflow
 
