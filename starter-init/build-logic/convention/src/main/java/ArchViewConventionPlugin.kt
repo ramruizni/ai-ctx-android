@@ -7,9 +7,9 @@ class ArchViewConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("starterdemo.android.library")
-                apply("starterdemo.android.library.compose")
-                apply("starterdemo.hilt")
+                apply("convention.android.library")
+                apply("convention.android.library.compose")
+                apply("convention.hilt")
             }
 
             dependencies {

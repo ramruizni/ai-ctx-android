@@ -69,17 +69,17 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 
 # Base Convention Plugins
-starterdemo-android-application = { id = "starterdemo.android.application", version = "unspecified" }
-starterdemo-android-application-compose = { id = "starterdemo.android.application.compose", version = "unspecified" }
-starterdemo-android-library = { id = "starterdemo.android.library", version = "unspecified" }
-starterdemo-android-room = { id = "starterdemo.android.room", version = "unspecified" }
-starterdemo-android-library-compose = { id = "starterdemo.android.library.compose", version = "unspecified" }
-starterdemo-hilt = { id = "starterdemo.hilt", version = "unspecified" }
-starterdemo-jvm-library = { id = "starterdemo.jvm.library", version = "unspecified" }
+convention-android-application = { id = "convention.android.application", version = "unspecified" }
+convention-android-application-compose = { id = "convention.android.application.compose", version = "unspecified" }
+convention-android-library = { id = "convention.android.library", version = "unspecified" }
+convention-android-room = { id = "convention.android.room", version = "unspecified" }
+convention-android-library-compose = { id = "convention.android.library.compose", version = "unspecified" }
+convention-hilt = { id = "convention.hilt", version = "unspecified" }
+convention-jvm-library = { id = "convention.jvm.library", version = "unspecified" }
 
 # Architecture Convention Plugins
-starterdemo-arch-view = { id = "starterdemo.arch.view", version = "unspecified" }
-starterdemo-arch-viewmodel = { id = "starterdemo.arch.viewmodel", version = "unspecified" }
+convention-arch-view = { id = "convention.arch.view", version = "unspecified" }
+convention-arch-viewmodel = { id = "convention.arch.viewmodel", version = "unspecified" }
 
 
 [bundles]

@@ -94,9 +94,9 @@ The project includes a sophisticated `build-logic` system with convention plugin
 
 ```kotlin
 // Automatically applied architectural conventions
-starterdemo-arch-view = { id = "starterdemo.arch.view" }
-starterdemo-arch-viewmodel = { id = "starterdemo.arch.viewmodel" } 
-starterdemo-android-room = { id = "starterdemo.android.room" }
+convention-arch-view = { id = "convention.arch.view" }
+convention-arch-viewmodel = { id = "convention.arch.viewmodel" } 
+convention-android-room = { id = "convention.android.room" }
 ```
 
 Each plugin encapsulates best practices, dependency management, and build optimizations.
