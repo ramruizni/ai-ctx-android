@@ -2,8 +2,10 @@
 
 ## CRITICAL: Command Execution Model
 **ALL commands must be run from ai-ctx-android directory using --target parameter**
-- ✅ `cd ai-ctx-android && /create-feature UserProfile --target ../MyProject`  
+- ✅ `cd ai-ctx-android && /create-feature UserProfile --target /full/path/to/MyProject`  
 - ❌ `cd MyProject && /create-feature UserProfile`
+
+**Prerequisites**: Run `/check-prerequisites` once for environment setup before using other commands.
 
 Projects are NOT self-contained - they only contain minimal config for centralized management.
 
@@ -33,22 +35,22 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 #### Existing Sunshine Projects (57blocks-common)
 ```bash
 # Photo management with command pattern
-/create-feature PhotoGallery --project-type 57blocks-common --target /path/to/Sunshine-Photos
+/create-feature PhotoGallery --project-type 57blocks-common --target /full/path/to/Sunshine-Photos
 
 # Event planning with basedomain architecture  
-/create-feature EventPlanner --project-type 57blocks-common --target /path/to/Dazzle
+/create-feature EventPlanner --project-type 57blocks-common --target /full/path/to/Dazzle
 
 # Guest management with UseCaseResult pattern
-/create-feature GuestManagement --project-type 57blocks-common --target /path/to/Sunshine-Parties
+/create-feature GuestManagement --project-type 57blocks-common --target /full/path/to/Sunshine-Parties
 ```
 
 #### Personal Projects (default architecture)
 ```bash
 # Travel planning with simple use cases
-/create-feature TripPlanner --project-type default --target /path/to/GeYuGoApp
+/create-feature TripPlanner --project-type default --target /full/path/to/GeYuGoApp
 
 # Movie tracking with standard Clean Architecture
-/create-feature Watchlist --project-type default --target /path/to/MoviesApp
+/create-feature Watchlist --project-type default --target /full/path/to/MoviesApp
 ```
 
 #### Create New Projects
@@ -80,9 +82,14 @@ project/
 ```
 
 ## Build Commands
-- Build: `./gradlew buildDebug`
+- Build: `./gradlew clean build`
 - Test: `./gradlew test`
 - Lint: `./gradlew lintDebug`
+
+## Template Resolution Priority
+1. **Project overrides** (highest): `{project}/.claude/templates-overrides/`
+2. **ai-ctx-android templates** (refined): `.claude/templates/`
+3. **System fallback** (lowest): Default system templates
 
 ## Architectural Conventions & Customization
 - **Base Patterns**: @.claude/docs/architectural-patterns.md
@@ -164,7 +171,7 @@ cp path/to/system/.claude/templates/viewmodel.kt.template .claude/templates-over
 ### Step 2: Configure Project Type (Easier) 
 ```bash
 # Automatically sets correct architectural preferences
-/create-feature UserProfile --project-type 57blocks-common
+/create-feature UserProfile --project-type 57blocks-common --target /full/path/to/project
 ```
 
 **OR** Manual Configuration:
@@ -181,7 +188,7 @@ cp path/to/system/.claude/templates/viewmodel.kt.template .claude/templates-over
 
 ### Step 3: Generate Features
 ```bash
-/create-feature UserProfile --project-type 57blocks-common
+/create-feature UserProfile --project-type 57blocks-common --target /full/path/to/project
 # Uses correct templates automatically based on project type
 ```
 
