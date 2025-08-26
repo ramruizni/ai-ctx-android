@@ -25,45 +25,45 @@ dependencies {
 gradlePlugin {
     plugins {
         register("android-application-compose") {
-            id = "starterdemo.android.application.compose"
+            id = "convention.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("android-application") {
-            id = "starterdemo.android.application"
+            id = "convention.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("android-library-compose") {
-            id = "starterdemo.android.library.compose"
+            id = "convention.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("android-library") {
-            id = "starterdemo.android.library"
+            id = "convention.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("android-room") {
-            id = "starterdemo.android.room"
+            id = "convention.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
         register("android-workManager") {
-            id = "starterdemo.android.workManager"
+            id = "convention.android.workManager"
             implementationClass = "AndroidWorkManagerConventionPlugin"
         }
         register("hilt") {
-            id = "starterdemo.hilt"
+            id = "convention.hilt"
             implementationClass = "HiltConventionPlugin"
         }
         register("jvm-library") {
-            id = "starterdemo.jvm.library"
+            id = "convention.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
 
         // Architecture
         register("arch-view") {
-            id = "starterdemo.arch.view"
+            id = "convention.arch.view"
             implementationClass = "ArchViewConventionPlugin"
         }
         register("arch-viewmodel") {
-            id = "starterdemo.arch.viewmodel"
+            id = "convention.arch.viewmodel"
             implementationClass = "ArchViewModelConventionPlugin"
         }
     }

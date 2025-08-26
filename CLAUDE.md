@@ -1,5 +1,12 @@
 # Android Clean Architecture Project Context
 
+## CRITICAL: Command Execution Model
+**ALL commands must be run from ai-ctx-android directory using --target parameter**
+- ✅ `cd ai-ctx-android && /create-feature UserProfile --target ../MyProject`  
+- ❌ `cd MyProject && /create-feature UserProfile`
+
+Projects are NOT self-contained - they only contain minimal config for centralized management.
+
 ## Project Overview
 Multi-module Android project following Clean Architecture with MVVM pattern, using:
 - **Architecture**: Clean Architecture + MVVM
@@ -55,9 +62,9 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 
 ## Cross-Project Capabilities
 - **Flexible location**: Create and manage projects anywhere on your system
-- **Automatic detection**: Commands detect target project when working in project directories
+- **Centralized management**: All templates and commands remain in ai-ctx-android
 - **Template inheritance**: Projects inherit ai-ctx-android's refined templates with override capability
-- **Self-contained projects**: Created projects become independent with their own `.claude/` configuration
+- **Minimal project config**: Created projects contain only configuration, not full context
 
 ## Project Structure
 ```

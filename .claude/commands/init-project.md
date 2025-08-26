@@ -149,26 +149,26 @@ Your new project will have:
 - ✅ **Template override capability** for project-specific customizations
 - ✅ **Build validation** ensuring everything compiles and runs
 
-## Project Independence
+## Project Independence: Configuration Only
 
-Each created project becomes fully independent:
-- **Self-contained**: All necessary scripts and templates copied
+Created projects contain minimal configuration for centralized management:
+- **Configuration**: Project-specific settings in `.claude/project-config.json`
 - **Customizable**: Can override templates in project's `.claude/templates-overrides/`
 - **Trackable**: Maintains reference to ai-ctx-android version used
-- **Updatable**: Can sync with ai-ctx-android improvements when needed
+- **Template resolution scripts**: For --target detection only
 
 ## Integration with Other Commands
 
-After project creation, all other commands work seamlessly:
-- **From ai-ctx-android**: Use `--target /path/to/your/project` with any command
-- **From project directory**: Commands work directly without target parameter
+After project creation, all commands must be run from ai-ctx-android:
+- **Command execution**: Always use `--target /path/to/your/project` with any command
+- **Centralized templates**: All templates and commands remain in ai-ctx-android
 - **Template resolution**: Automatically uses project overrides when available
 
 ## Next Steps After Creation
 
 1. **Navigate to your project**: `cd /path/to/ProjectName`
 2. **Verify build**: `./gradlew buildDebug`
-3. **Create features**: Use `/create-feature` (with --target if working from ai-ctx-android)
+3. **Create features**: From ai-ctx-android: `/create-feature FeatureName --target /path/to/ProjectName`
 4. **Customize templates**: Place overrides in `.claude/templates-overrides/`
 5. **Configure preferences**: Edit `.claude/project-config.json`
 
@@ -176,7 +176,7 @@ After project creation, all other commands work seamlessly:
 
 - **Flexible location**: Create projects anywhere on your system
 - **Centralized templates**: Leverage ai-ctx-android's refined templates
-- **Project independence**: Each project becomes self-contained
+- **Centralized management**: All commands and templates in ai-ctx-android
 - **Consistent quality**: Same high-quality code generation everywhere
 - **Easy management**: Work on multiple projects from single ai-ctx-android instance
 

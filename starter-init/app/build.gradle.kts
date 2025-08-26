@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.starterdemo.android.application)
-    alias(libs.plugins.starterdemo.android.application.compose)
-    alias(libs.plugins.starterdemo.android.room)
-    alias(libs.plugins.starterdemo.hilt)
+    alias(libs.plugins.convention.android.application)
+    alias(libs.plugins.convention.android.application.compose)
+    alias(libs.plugins.convention.android.room)
+    alias(libs.plugins.convention.hilt)
 }
 
 android {
