@@ -21,7 +21,7 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 ## Available Commands
 - `/check-prerequisites` - Verify and configure development environment (run once)
 - `/init-project` - Initialize new project anywhere on your system (supports `--target` and `--project-type` parameters)
-- `/create-feature` - Create complete feature in any project (supports `--target` and `--project-type` parameters)
+- `/create-feature` - Create complete feature in any project (supports `--target`, `--project-type` parameters, and feature description)
 - `/setup-db` - Setup/update database module in any project (supports `--target` parameter) 
 - `/setup-navigation` - Create navigation routes and graphs in any project (supports `--target` parameter)
 
@@ -35,22 +35,22 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 #### Existing Sunshine Projects (57blocks-common)
 ```bash
 # Photo management with command pattern
-/create-feature PhotoGallery --project-type 57blocks-common --target /full/path/to/Sunshine-Photos
+/create-feature PhotoGallery --project-type 57blocks-common --target /full/path/to/Sunshine-Photos "Photo gallery with grid layout, search, filtering, and detailed photo view with metadata"
 
 # Event planning with basedomain architecture  
-/create-feature EventPlanner --project-type 57blocks-common --target /full/path/to/Dazzle
+/create-feature EventPlanner --project-type 57blocks-common --target /full/path/to/Dazzle "Event planning interface with calendar view, guest lists, venue selection, and RSVP tracking"
 
 # Guest management with UseCaseResult pattern
-/create-feature GuestManagement --project-type 57blocks-common --target /full/path/to/Sunshine-Parties
+/create-feature GuestManagement --project-type 57blocks-common --target /full/path/to/Sunshine-Parties "Guest management system with contact import, invitation sending, and attendance tracking"
 ```
 
 #### Personal Projects (default architecture)
 ```bash
 # Travel planning with simple use cases
-/create-feature TripPlanner --project-type default --target /full/path/to/GeYuGoApp
+/create-feature TripPlanner --project-type default --target /full/path/to/GeYuGoApp "Trip planning with destination search, itinerary builder, expense tracker, and travel document storage"
 
 # Movie tracking with standard Clean Architecture
-/create-feature Watchlist --project-type default --target /full/path/to/MoviesApp
+/create-feature Watchlist --project-type default --target /full/path/to/MoviesApp "Movie watchlist with search, ratings, reviews, and personal notes. Integration with movie databases for metadata"
 ```
 
 #### Create New Projects
@@ -60,6 +60,9 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 
 # New project with 57blocks architecture
 /init-project RecipeManager --project-type 57blocks-common --target /work/projects/RecipeManager
+
+# Then add features with descriptions
+/create-feature WorkoutTracker --project-type default --target /my/projects/FitnessTracker "Workout tracking with exercise library, timer, progress charts, and workout history"
 ```
 
 ## Cross-Project Capabilities
@@ -82,7 +85,8 @@ project/
 ```
 
 ## Build Commands
-- Build: `./gradlew clean build`
+- **Initial Setup**: `./gradlew clean build` (full build during project initialization)
+- **Feature Validation**: `./gradlew buildDebug` (lightweight compilation check for new features)
 - Test: `./gradlew test`
 - Lint: `./gradlew lintDebug`
 
@@ -147,7 +151,7 @@ project/
 
 ### Phase 3: Validation & Build Safety
 - **Dependency Validation**: Verify no circular dependencies introduced
-- **Build Test**: Optional incremental build check
+- **Lightweight Build Test**: `./gradlew buildDebug` for fast compilation verification (picks any available debug flavor)
 - **Template Compliance**: Ensure generated code matches project patterns
 
 ## Module Creation Requirements
@@ -188,8 +192,8 @@ cp path/to/system/.claude/templates/viewmodel.kt.template .claude/templates-over
 
 ### Step 3: Generate Features
 ```bash
-/create-feature UserProfile --project-type 57blocks-common --target /full/path/to/project
-# Uses correct templates automatically based on project type
+/create-feature UserProfile --project-type 57blocks-common --target /full/path/to/project "User profile management with photo upload, personal information editing, privacy settings, and account preferences"
+# Uses correct templates automatically based on project type and description
 ```
 
 ## Starter Template

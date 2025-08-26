@@ -83,27 +83,28 @@ Generates a complete feature following Clean Architecture in any Android project
 
 **Syntax:**
 ```bash
-/create-feature <FeatureName> [--target <project-path>] [--project-type <type>]
+/create-feature <FeatureName> [--target <project-path>] [--project-type <type>] "<description>"
 ```
 
 **Parameters:**
 - `FeatureName`: Name of the feature (e.g., "UserProfile", "PhotoGallery", "TaskManager")
 - `--target`: Optional path to existing Android project directory (auto-detected if in project directory)
 - `--project-type`: Optional project type (`default` or `57blocks-common`)
+- `description`: Detailed description of the feature functionality, UI behavior, and data requirements
 
 **Examples:**
 ```bash
 # Create feature in current project (when in project directory)
-/create-feature UserProfile
+/create-feature UserProfile "Display and edit user information including name, email, profile picture. Allow users to update their settings and preferences."
 
 # Create feature in external project from ai-ctx-android
-/create-feature UserProfile --target ../projects/MyApp
+/create-feature UserProfile --target ../projects/MyApp "User profile management with editable fields and photo upload functionality"
 
-# Create feature with enterprise patterns (project-type is usually enough)
-/create-feature PhotoGallery --project-type 57blocks-common --target ../work/MyApp
+# Create feature with enterprise patterns and detailed description
+/create-feature PhotoGallery --project-type 57blocks-common --target ../work/MyApp "The user will see a list of photos in a vertical grid. Each photo shows thumbnail, title, and date. Clicking on a photo opens detail view with full-size image, metadata, and sharing options."
 
-# Add feature to existing Sunshine project
-/create-feature GuestManagement --project-type 57blocks-common --target /path/to/Sunshine-Parties
+# Add feature to existing Sunshine project with Spotify-like functionality
+/create-feature MusicLibrary --project-type 57blocks-common --target /path/to/Sunshine-Parties "The user will see a list of songs, which will appear in a vertical grid. These lists will resemble what we find on the Spotify API. They will have top search input. When clicking on each song, the song details will be shown on a new screen."
 ```
 
 **Other Commands:**
@@ -247,7 +248,9 @@ The system automatically:
 ## Build Validation
 
 Each command includes comprehensive gradle build validation:
-- Full compilation checks (`./gradlew build`)
+- **Initial project setup**: Full compilation checks (`./gradlew clean build`) during `/init-project`
+- **Feature validation**: Lightweight compilation checks (`./gradlew buildDebug`) for subsequent `/create-feature` commands
+- **Build flavor support**: Automatically picks any available debug flavor to avoid building all variants
 - Lint validation (`./gradlew lintDebug`)
 - Unit test execution (`./gradlew test`)
 - Dependency analysis and circular dependency detection
@@ -324,10 +327,10 @@ cd ai-ctx-android
 ### 3. Add Features
 ```bash
 # Add feature to any project
-/create-feature UserProfile --target ../projects/MyApp
+/create-feature UserProfile --target ../projects/MyApp "User profile screen with editable information and settings"
 
 # Add feature with enterprise patterns
-/create-feature PhotoGallery --project-type 57blocks-common --target ../work/RecipeManager
+/create-feature PhotoGallery --project-type 57blocks-common --target ../work/RecipeManager "Photo gallery with grid layout, search functionality, and detail views"
 ```
 
 ### 4. Add Features to Existing Projects
@@ -336,10 +339,10 @@ cd ai-ctx-android
 # No additional configuration needed
 
 # Add feature to existing Sunshine project
-/create-feature GuestManagement --project-type 57blocks-common --target /path/to/Sunshine-Parties
+/create-feature GuestManagement --project-type 57blocks-common --target /path/to/Sunshine-Parties "Guest management system with list view, add/edit forms, and RSVP tracking"
 
 # Add feature to personal project  
-/create-feature UserProfile --project-type default --target ../MyExistingApp
+/create-feature UserProfile --project-type default --target ../MyExistingApp "Simple user profile with basic information display and edit functionality"
 
-# The system auto-detects project structure and applies appropriate patterns
+# The system auto-detects project structure and applies appropriate patterns based on the description
 ```
