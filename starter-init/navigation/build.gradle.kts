@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.starterdemo.android.library)
-    alias(libs.plugins.starterdemo.android.library.compose)
-    alias(libs.plugins.starterdemo.hilt)
+    alias(libs.plugins.convention.android.library)
+    alias(libs.plugins.convention.android.library.compose)
+    alias(libs.plugins.convention.hilt)
     alias(libs.plugins.kotlinx.serialization)
 }
 

@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.starterdemo.android.library)
-    alias(libs.plugins.starterdemo.android.room)
-    alias(libs.plugins.starterdemo.hilt)
+    alias(libs.plugins.convention.android.library)
+    alias(libs.plugins.convention.android.room)
+    alias(libs.plugins.convention.hilt)
 }
 
 android {
