@@ -8,8 +8,8 @@ class ArchViewModelConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("starterdemo.android.library")
-                apply("starterdemo.hilt")
+                apply("convention.android.library")
+                apply("convention.hilt")
             }
 
             dependencies {

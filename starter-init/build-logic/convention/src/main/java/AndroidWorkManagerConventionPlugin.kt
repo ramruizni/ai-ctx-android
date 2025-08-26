@@ -7,7 +7,7 @@ class AndroidWorkManagerConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("phoenix.android.hilt")
+                apply("convention.hilt")
             }
 
             dependencies {
