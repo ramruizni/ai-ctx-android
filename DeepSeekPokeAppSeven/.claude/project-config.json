@@ -1,0 +1,13 @@
+{
+  "packageName": "com.ramruizni.deepseekpokeappseven",
+  "projectName": "DeepSeekPokeAppSeven",
+  "createdAt": "2025-08-28T18:50:00.000Z",
+  "aiCtxAndroidVersion": "6ef92eaf4b84bceb222058384d04687c43f45af3",
+  "architecturalPreferences": {
+    "diModuleStyle": "object-provides",
+    "useCasePattern": "simple-pattern",
+    "logging": "none",
+    "injectionPattern": "manual-instantiation"
+  },
+  "customDependencies": []
+}
