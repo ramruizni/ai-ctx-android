@@ -20,6 +20,14 @@ dependencies {
     implementation(project(":navigation"))
 
     // FEATURE MODULES GO HERE
+    implementation(project(":pokemon:domain"))
+    implementation(project(":pokemon:infrastructure"))
+    implementation(project(":pokemon:datasource"))
+    
+    // VIEW AND VIEWMODEL MODULES
+    implementation(project(":features:pokemon:view"))
+    implementation(project(":features:pokemon:viewmodel"))
+    
 //    implementation(project(":demo:domain"))
 //    implementation(project(":demo:infrastructure"))
 //    implementation(project(":demo:datasource"))

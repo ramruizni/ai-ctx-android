@@ -5,7 +5,9 @@ androidDesugarJdkLibs = "2.1.5"
 androidxHiltNavigationCompose = "1.2.0"
 androidxNavigation = "2.9.2"
 composeBom = "2025.07.00"
+composeMaterial = "1.8.3"
 coreKtx = "1.16.0"
+coil = "3.0.4"
 hilt = "2.57"
 jetbrainsKotlinJvm = "2.2.0"
 kotlin = "2.2.0"
@@ -17,6 +19,9 @@ ksp = "2.2.0-2.0.2"
 lifecycleRuntimeKtx = "2.9.2"
 lifecycleViewmodelKtx = "2.9.2"
 room = "2.7.2"
+retrofit = "2.9.0"
+okhttp = "4.12.0"
+retrofitKotlinxSerialization = "1.0.0"
 
 
 [libraries]
@@ -30,8 +35,13 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose" } # What is this version?
+androidx-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "composeMaterial" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
+
+# Coil
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -54,6 +64,12 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
+# Network
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-kotlinx-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerialization" }
+okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 
 [plugins]

@@ -3,20 +3,18 @@ package com.ramruizni.deepseekpokeappsix.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-//import com.ramruizni.deepseekpokeappsix.navigation.demo.demoGraph
-//import com.ramruizni.deepseekpokeappsix.navigation.demo.routes.DemoGraphRoute
+import com.ramruizni.deepseekpokeappsix.navigation.pokemon.pokemonGraph
+import com.ramruizni.deepseekpokeappsix.navigation.pokemon.routes.PokemonGraphRoute
 
 @Composable
 fun NavigationHost() {
     val navController = rememberNavController()
 
-    /*NavHost(
+    NavHost(
         route = RootGraphRoute::class,
         navController = navController,
-        // FIRST NAVIGATION ROUTE GOES HERE
-//        startDestination = DemoGraphRoute
+        startDestination = PokemonGraphRoute
     ) {
-        // NAVIGATION GRAPHS GO HERE
-//        demoGraph(navController = navController)
-    }*/
+        pokemonGraph(navController = navController)
+    }
 }

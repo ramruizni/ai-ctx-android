@@ -13,8 +13,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.material3)
 
     // VIEWS AND VIEW MODELS GO HERE
-//    implementation(project(":features:demo:view"))
-//    implementation(project(":features:demo:viewmodel"))
+    implementation(project(":features:pokemon:view"))
 }

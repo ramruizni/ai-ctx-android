@@ -1,0 +1,38 @@
+package {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.network
+
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.domain.{{ENTITY_CLASS_NAME}}
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.local.{{ENTITY_CLASS_NAME}}DbDto
+
+fun {{ENTITY_CLASS_NAME}}NetworkDto.toDomain(): {{ENTITY_CLASS_NAME}} {
+    return {{ENTITY_CLASS_NAME}}(
+        id = id,
+        name = name.replaceFirstChar { it.uppercase() },
+        imageUrl = sprites.frontDefault.orEmpty(),
+        types = types.map { it.type.name.replaceFirstChar { it.uppercase() } },
+        height = height,
+        weight = weight,
+        abilities = abilities.map { it.ability.name.replaceFirstChar { it.uppercase() } },
+        stats = stats.associate { 
+            it.stat.name.replaceFirstChar { it.uppercase() } to it.baseStat 
+        }
+    )
+}
+
+fun {{ENTITY_CLASS_NAME}}NetworkDto.toDbDto(): {{ENTITY_CLASS_NAME}}DbDto {
+    return {{ENTITY_CLASS_NAME}}DbDto(
+        id = id,
+        name = name,
+        imageUrl = sprites.frontDefault.orEmpty(),
+        types = types.joinToString(",") { it.type.name },
+        height = height,
+        weight = weight,
+        abilities = abilities.joinToString(",") { it.ability.name },
+        stats = stats.associate { 
+            it.stat.name to it.baseStat 
+        }.entries.joinToString(",") { "${it.key}:${it.value}" }
+    )
+}
+
+fun PokemonListItemDto.extractId(): Int {
+    return url.removeSuffix("/").split("/").last().toInt()
+}

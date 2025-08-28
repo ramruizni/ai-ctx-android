@@ -9,6 +9,6 @@ android {
 }
 
 dependencies {
-    // DATA SOURCE MODULES GO HERE
-//    implementation(project(":demo:datasource"))
+    // No dependencies - database module should be self-contained
+    // Entity classes and DAOs are provided by datasource modules that depend on this module
 }
