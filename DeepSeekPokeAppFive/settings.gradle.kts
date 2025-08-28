@@ -1,0 +1,35 @@
+pluginManagement {
+    includeBuild("build-logic")
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "DeepSeekPokeAppFive"
+include(":app")
+include(":navigation")
+include(":database")
+
+// VIEWS AND VIEW MODELS GO HERE
+//include(":features:demo:view")
+//include(":features:demo:viewmodel")
+
+// FEATURE MODULES GO HERE
+//include(":demo:domain")
+//include(":demo:infrastructure")
+//include(":demo:datasource")
