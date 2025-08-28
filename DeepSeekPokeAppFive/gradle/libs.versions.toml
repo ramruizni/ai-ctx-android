@@ -16,6 +16,8 @@ kotlinxSerializationPlugin = "2.2.0"
 ksp = "2.2.0-2.0.2"
 lifecycleRuntimeKtx = "2.9.2"
 lifecycleViewmodelKtx = "2.9.2"
+okhttp = "4.12.0"
+retrofit = "2.11.0"
 room = "2.7.2"
 
 
@@ -41,6 +43,12 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+# Network
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
@@ -97,6 +105,13 @@ androidx-compose = [
     "androidx-navigation-compose",
     "androidx-hilt-navigation-compose",
     "androidx-lifecycle-viewmodel-compose"
+]
+
+network = [
+    "okhttp",
+    "okhttp-logging-interceptor", 
+    "retrofit",
+    "retrofit-converter-moshi"
 ]
 
 room-datasource = [
