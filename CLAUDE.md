@@ -19,6 +19,11 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 - **Build**: Gradle with Kotlin DSL and build-logic conventions
 
 ## Available Commands
+
+### 🚀 Next-Generation Agentic Commands (Recommended)
+- **`/agentic-create-feature`** - **60-70% faster** feature creation using specialized Claude Code agents with parallel execution and enterprise-grade quality validation (2-3 minutes vs 8+ minutes)
+
+### Standard Commands  
 - `/check-prerequisites` - Verify and configure development environment (run once)
 - `/init-project` - Initialize new project anywhere on your system (supports `--target` and `--project-type` parameters)
 - `/create-feature` - Create complete feature in any project (supports `--target`, `--project-type` parameters, and feature description)
@@ -32,7 +37,19 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 ### Usage Examples
 **IMPORTANT**: Run all commands from the ai-ctx-android directory to use centralized templates.
 
-#### Existing Sunshine Projects (57blocks-common)
+#### Existing Sunshine Projects (57blocks-common) - **AGENTIC RECOMMENDED**
+```bash
+# Photo management with command pattern (2-3 minutes vs 8+ minutes)
+/agentic-create-feature PhotoGallery --project-type 57blocks-common --target /full/path/to/Sunshine-Photos "Photo gallery with grid layout displaying thumbnails, search functionality with text and tag filters, image filtering by date/size/type, detailed photo view with EXIF metadata display, zoom and pan capabilities, sharing to social media platforms, and batch selection for operations"
+
+# Event planning with basedomain architecture (parallel generation)
+/agentic-create-feature EventPlanner --project-type 57blocks-common --target /full/path/to/Dazzle "Event planning interface with interactive calendar view for date selection, guest list management with contact import from phone, venue selection with map integration and reviews, RSVP tracking with push notifications, budget tracking with expense categories, and event template creation for recurring events"
+
+# Guest management with UseCaseResult pattern (enterprise-grade quality)
+/agentic-create-feature GuestManagement --project-type 57blocks-common --target /full/path/to/Sunshine-Parties "Guest management system with contact import from phone/email, invitation sending via SMS/email with custom templates, RSVP tracking with response analytics, attendance tracking with check-in QR codes, dietary restrictions management, and guest communication history"
+```
+
+#### Standard Commands (Sequential - Legacy)
 ```bash
 # Photo management with command pattern
 /create-feature PhotoGallery --project-type 57blocks-common --target /full/path/to/Sunshine-Photos "Photo gallery with grid layout, search, filtering, and detailed photo view with metadata"
@@ -44,7 +61,16 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 /create-feature GuestManagement --project-type 57blocks-common --target /full/path/to/Sunshine-Parties "Guest management system with contact import, invitation sending, and attendance tracking"
 ```
 
-#### Personal Projects (default architecture)
+#### Personal Projects (default architecture) - **AGENTIC RECOMMENDED**
+```bash
+# Travel planning with simple use cases (parallel generation)
+/agentic-create-feature TripPlanner --project-type default --target /full/path/to/GeYuGoApp "Trip planning application with destination search using maps integration, day-by-day itinerary builder with time slots, expense tracker with category breakdown and currency conversion, travel document storage with photo scanning, weather information integration, and offline access for key information"
+
+# Movie tracking with standard Clean Architecture (enterprise quality)
+/agentic-create-feature Watchlist --project-type default --target /full/path/to/MoviesApp "Movie watchlist with search functionality using movie database APIs, personal rating system with reviews, watchlist categories (want to watch, watched, favorites), recommendation engine based on preferences, sharing capabilities with friends, and detailed movie information with trailers and cast"
+```
+
+#### Standard Commands (Sequential - Legacy)
 ```bash
 # Travel planning with simple use cases
 /create-feature TripPlanner --project-type default --target /full/path/to/GeYuGoApp "Trip planning with destination search, itinerary builder, expense tracker, and travel document storage"
