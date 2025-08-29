@@ -49,6 +49,24 @@
       "filePattern": "**/*.kt",
       "severity": "critical",
       "message": "Use BuildConfig or secure storage for secrets, never hardcode them"
+    },
+    {
+      "id": "REQUIRE_VIEWMODEL_MODULE_DEPENDENCY",
+      "description": "App module must include viewmodel feature module dependencies",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/app/**/build.gradle.kts",
+      "severity": "critical",
+      "message": "RUNTIME CRITICAL: App crashes when ViewModels cannot be injected during navigation"
+    },
+    {
+      "id": "ENFORCE_BUILD_CONFIG_USAGE",
+      "description": "Environment-specific configurations must use BuildConfig",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/*Module*.kt",
+      "severity": "critical", 
+      "message": "PRODUCTION CRITICAL: Use BuildConfig.DEBUG to control logging and database migration"
     }
   ],
   "high": [
