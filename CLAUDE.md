@@ -1,13 +1,17 @@
-# Android Clean Architecture Project Context
+# Android Clean Architecture Context
 
-## CRITICAL: Command Execution Model
-**ALL commands must be run from ai-ctx-android directory using --target parameter**
-- ✅ `cd ai-ctx-android && /create-feature UserProfile --target /full/path/to/MyProject`  
-- ❌ `cd MyProject && /create-feature UserProfile`
+## CRITICAL: Fully Automatic Improvement Cycle
+**Zero manual steps** - the system improves everything automatically.
 
-**Prerequisites**: Run `/check-prerequisites` once for environment setup before using other commands.
+### Seamless Process:
+```bash
+cd ai-ctx-android
+/init-project MyProject --target /path/to/MyProject        # ✅ Uses current best templates
+/create-feature UserProfile --target /path/to/MyProject    # ✅ Clean generation  
+/improve-generator /path/to/MyProject                       # ✅ AUTO-FIXES everything
+```
 
-Projects are NOT self-contained - they only contain minimal config for centralized management.
+**Comprehensive auto-improvements**: Templates, docs, commands, agents, intelligence.
 
 ## Project Overview
 Multi-module Android project following Clean Architecture with MVVM pattern, using:
@@ -18,21 +22,16 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 - **Navigation**: Navigation Compose
 - **Build**: Gradle with Kotlin DSL and build-logic conventions
 
-## Available Commands
+## Commands (Template-Validated)
 
-### 🚀 Next-Generation Agentic Commands (Recommended)
-- **`/agentic-create-feature`** - **60-70% faster** feature creation using specialized Claude Code agents with parallel execution and enterprise-grade quality validation (2-3 minutes vs 8+ minutes)
+### Core Commands (Now with validation)
+- `/init-project` - Project creation with pre-validated templates
+- `/create-feature` - Feature creation with quality-assured templates  
+- `/agentic-create-feature` - Parallel generation with enterprise validation
 
-### Standard Commands  
-- `/check-prerequisites` - Verify and configure development environment (run once)
-- `/init-project` - Initialize new project anywhere on your system (supports `--target` and `--project-type` parameters)
-- `/create-feature` - Create complete feature in any project (supports `--target`, `--project-type` parameters, and feature description)
-- `/setup-db` - Setup/update database module in any project (supports `--target` parameter) 
-- `/setup-navigation` - Create navigation routes and graphs in any project (supports `--target` parameter)
-
-### 🔧 Quality Assurance & Continuous Improvement Commands
-- **`/audit-project`** - **NEW** - Run expert-level Android audit on generated projects with 10+ years of architectural experience
-- **`/improve-generator`** - **NEW** - Complete audit → documentation improvement → template validation cycle to make generator smarter
+### Fully Automatic Improvement Cycle  
+- `/improve-generator` - Audit → **AUTO-FIX EVERYTHING** → Next project improved
+- **No manual steps required** - templates, docs, commands, agents all improve automatically
 
 ## Project Types (Recommended)
 - **`default`**: Standard Clean Architecture with simple use cases

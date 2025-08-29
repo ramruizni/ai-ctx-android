@@ -47,7 +47,28 @@ class ContinuousImprovementSystem {
     }
 
     /**
-     * Main improvement cycle execution
+     * Main improvement cycle execution - now comprehensive and automatic
+     */
+    async executeComprehensiveImprovement(projectPath) {
+        console.log('🚀 Starting comprehensive system improvement...');
+        
+        // Use the new comprehensive improver instead of just documentation
+        const ComprehensiveImprover = require('./comprehensive-improver.js');
+        const improver = new ComprehensiveImprover();
+        
+        const result = await improver.improveEverything(projectPath);
+        
+        // Update system state
+        this.systemState.totalProjectsAudited++;
+        this.systemState.totalImprovements += result.totalImprovements;
+        this.systemState.lastAuditDate = new Date().toISOString();
+        this.saveSystemState();
+        
+        return result;
+    }
+
+    /**
+     * Main improvement cycle execution (legacy method)
      */
     async runImprovementCycle(projectPath) {
         console.log('🚀 Starting continuous improvement cycle...');
