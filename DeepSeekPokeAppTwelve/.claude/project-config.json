@@ -1,0 +1,13 @@
+{
+  "packageName": "com.example.deepseekpokeapptwelve",
+  "projectName": "DeepSeekPokeAppTwelve",
+  "createdAt": "2025-08-29T17:15:00Z",
+  "aiCtxAndroidVersion": "af35712539fd79bc1bb0603ab12a42b0ee485c19",
+  "architecturalPreferences": {
+    "diModuleStyle": "object-provides",
+    "useCasePattern": "simple-pattern",
+    "logging": "none",
+    "injectionPattern": "manual-instantiation"
+  },
+  "customDependencies": []
+}
