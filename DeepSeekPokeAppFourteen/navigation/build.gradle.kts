@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // VIEWS AND VIEW MODELS GO HERE
+    implementation(project(":features:pokemon:view"))
 //    implementation(project(":features:demo:view"))
 //    implementation(project(":features:demo:viewmodel"))
 }

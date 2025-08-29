@@ -26,10 +26,15 @@ include(":navigation")
 include(":database")
 
 // VIEWS AND VIEW MODELS GO HERE
+include(":features:pokemon:view")
+include(":features:pokemon:viewmodel")
 //include(":features:demo:view")
 //include(":features:demo:viewmodel")
 
 // FEATURE MODULES GO HERE
+include(":pokemon:domain")
+include(":pokemon:infrastructure")
+include(":pokemon:datasource")
 //include(":demo:domain")
 //include(":demo:infrastructure")
 //include(":demo:datasource")

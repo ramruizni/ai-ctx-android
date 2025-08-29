@@ -19,6 +19,19 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":navigation"))
 
+    // POKEMON FEATURE MODULES
+    implementation(project(":pokemon:domain"))
+    implementation(project(":pokemon:infrastructure"))
+    implementation(project(":pokemon:datasource"))
+    implementation(project(":features:pokemon:view"))
+    implementation(project(":features:pokemon:viewmodel"))
+
+    // Network dependencies
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.kotlin.serialization)
+    implementation(libs.okhttp.logging)
+    implementation(libs.kotlinx.serialization.json)
+
     // FEATURE MODULES GO HERE
 //    implementation(project(":demo:domain"))
 //    implementation(project(":demo:infrastructure"))

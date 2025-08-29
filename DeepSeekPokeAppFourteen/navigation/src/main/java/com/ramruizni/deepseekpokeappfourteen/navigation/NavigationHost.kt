@@ -3,6 +3,8 @@ package com.ramruizni.deepseekpokeappfourteen.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.ramruizni.deepseekpokeappfourteen.navigation.pokemon.pokemonGraph
+import com.ramruizni.deepseekpokeappfourteen.navigation.pokemon.routes.PokemonGraphRoute
 //import com.ramruizni.deepseekpokeappfourteen.navigation.demo.demoGraph
 //import com.ramruizni.deepseekpokeappfourteen.navigation.demo.routes.DemoGraphRoute
 
@@ -10,13 +12,13 @@ import androidx.navigation.compose.rememberNavController
 fun NavigationHost() {
     val navController = rememberNavController()
 
-    /*NavHost(
+    NavHost(
         route = RootGraphRoute::class,
         navController = navController,
-        // FIRST NAVIGATION ROUTE GOES HERE
-//        startDestination = DemoGraphRoute
+        startDestination = PokemonGraphRoute
     ) {
+        pokemonGraph(navController = navController)
         // NAVIGATION GRAPHS GO HERE
 //        demoGraph(navController = navController)
-    }*/
+    }
 }
