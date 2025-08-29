@@ -1,0 +1,211 @@
+{
+  "critical": [
+    {
+      "id": "PREVENT_CIRCULAR_DEPENDENCIES",
+      "description": "Database modules must not depend on datasource modules",
+      "pattern": {},
+      "filePattern": "**/database/**/build.gradle.kts",
+      "severity": "critical",
+      "message": "Database module cannot depend on datasource module - creates circular dependency"
+    },
+    {
+      "id": "ENFORCE_ENTITY_LOCATION",
+      "description": "Room entities must be in database module, not datasource",
+      "pattern": {},
+      "filePattern": "**/datasource/**/*.kt",
+      "severity": "critical",
+      "message": "Room entities must be in database module for proper separation of concerns"
+    },
+    {
+      "id": "PREVENT_REPOSITORY_IN_VIEWMODEL",
+      "description": "ViewModels must not directly inject repositories",
+      "pattern": {},
+      "filePattern": "**/viewmodel/**/*ViewModel.kt",
+      "severity": "critical",
+      "message": "ViewModels should only inject use cases, not repositories directly"
+    },
+    {
+      "id": "ENFORCE_NAVIGATION_HOST_IMPLEMENTATION",
+      "description": "NavigationHost must be properly implemented, not empty or commented",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/NavigationHost.kt",
+      "severity": "critical",
+      "message": "NavigationHost must include proper startDestination and navigation setup"
+    },
+    {
+      "id": "REQUIRE_VIEW_MODULE_DEPENDENCY",
+      "description": "App module must include view module dependencies",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/app/**/build.gradle.kts",
+      "severity": "critical",
+      "message": "App module must include view module dependencies for UI accessibility"
+    },
+    {
+      "id": "PREVENT_HARDCODED_SECRETS",
+      "description": "API keys and secrets must not be hardcoded in templates",
+      "pattern": {},
+      "filePattern": "**/*.kt",
+      "severity": "critical",
+      "message": "Use BuildConfig or secure storage for secrets, never hardcode them"
+    }
+  ],
+  "high": [
+    {
+      "id": "ENFORCE_HILT_VIEWMODEL",
+      "description": "ViewModels must use @HiltViewModel annotation",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/viewmodel/**/*ViewModel.kt",
+      "severity": "high",
+      "message": "All ViewModels must be annotated with @HiltViewModel for proper DI"
+    },
+    {
+      "id": "PREVENT_INJECT_IN_NON_VIEWMODELS",
+      "description": "Only ViewModels should use @Inject constructors",
+      "pattern": {},
+      "excludePattern": "**/viewmodel/**/*.kt",
+      "filePattern": "**/*.kt",
+      "severity": "high",
+      "message": "Use manual instantiation in DI modules instead of @Inject constructors"
+    },
+    {
+      "id": "REQUIRE_INTERFACE_SEPARATION",
+      "description": "Repository implementations must be separate from interfaces",
+      "pattern": {},
+      "conflictPattern": {},
+      "sameFile": true,
+      "severity": "high",
+      "message": "Repository interfaces and implementations must be in separate files/modules"
+    },
+    {
+      "id": "PREVENT_PRODUCTION_HTTP_LOGGING_CRITICAL",
+      "description": "HTTP logging SECURITY CRITICAL - must be debug-only configuration",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/*NetworkModule*.kt",
+      "severity": "critical",
+      "message": "SECURITY CRITICAL: HTTP body logging exposes sensitive data in production logs"
+    },
+    {
+      "id": "PREVENT_DESTRUCTIVE_MIGRATION_PRODUCTION",
+      "description": "Destructive migration should not be used in production",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/*DatabaseModule*.kt",
+      "severity": "critical",
+      "message": "DATA CRITICAL: Destructive migration causes data loss in production updates"
+    },
+    {
+      "id": "REQUIRE_BUILD_AWARE_DATABASE_CONFIG",
+      "description": "Database configuration must be build-aware (debug vs production)",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/*DatabaseModule*.kt",
+      "severity": "critical",
+      "message": "PRODUCTION CRITICAL: Database must have different configurations for debug vs production builds"
+    },
+    {
+      "id": "PREVENT_ROOM_ENTITY_IN_DATASOURCE",
+      "description": "Room entities must not be in DataSource layer - architectural violation",
+      "pattern": {},
+      "filePattern": "**/datasource/**/*.kt",
+      "severity": "high",
+      "message": "ARCHITECTURAL VIOLATION: Room entities must be in database module, not datasource layer"
+    },
+    {
+      "id": "PREVENT_CROSS_LAYER_DOMAIN_IMPORTS",
+      "description": "DataSource layer must not import Domain models directly",
+      "pattern": {},
+      "filePattern": "**/datasource/**/*.kt",
+      "severity": "high",
+      "message": "DEPENDENCY INVERSION VIOLATION: DataSource layer cannot import Domain - map at Infrastructure layer"
+    },
+    {
+      "id": "PREVENT_SILENT_ERROR_HANDLING",
+      "description": "Catch blocks must not return empty results without logging",
+      "pattern": {},
+      "filePattern": "**/*Repository*.kt",
+      "severity": "high",
+      "message": "SILENT FAILURE: Errors must be logged and propagated, not hidden with empty results"
+    },
+    {
+      "id": "PREVENT_JSON_STRING_STORAGE",
+      "description": "Complex data should not be stored as JSON strings in database",
+      "pattern": {},
+      "filePattern": "**/*DbDto*.kt",
+      "severity": "medium",
+      "message": "PERFORMANCE ISSUE: Use Room relationships or TypeConverters instead of JSON strings"
+    },
+    {
+      "id": "REQUIRE_DATASOURCE_DATABASE_DEPENDENCY",
+      "description": "DataSource module must depend on Database module",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/datasource/**/build.gradle.kts",
+      "severity": "high",
+      "message": "DataSource module must depend on Database module for proper layer separation"
+    },
+    {
+      "id": "PREVENT_EMPTY_TYPECONVERTER_CLASSES",
+      "description": "TypeConverter classes must contain actual converter methods",
+      "pattern": {},
+      "requiresPattern": {},
+      "filePattern": "**/*TypeConverter*.kt",
+      "severity": "high",
+      "message": "ARCHITECTURAL ISSUE: Empty TypeConverter classes provide no value - implement actual converters or remove"
+    },
+    {
+      "id": "PREVENT_INCONSISTENT_JSON_HANDLING",
+      "description": "JSON fields must have consistent handling approach",
+      "pattern": {},
+      "filePattern": "**/*Entity*.kt",
+      "severity": "medium",
+      "message": "CONSISTENCY ISSUE: Use either TypeConverters OR proper object types consistently across all JSON fields"
+    }
+  ],
+  "medium": [
+    {
+      "id": "CONSISTENT_STATE_MANAGEMENT",
+      "description": "ViewModels should use single StateFlow pattern",
+      "pattern": {},
+      "countLimit": 1,
+      "filePattern": "**/viewmodel/**/*ViewModel.kt",
+      "severity": "medium",
+      "message": "Use single StateFlow for UI state management"
+    },
+    {
+      "id": "PROPER_SCOPE_USAGE",
+      "description": "Use cases should not be marked as Singleton unless necessary",
+      "pattern": {},
+      "filePattern": "**/di/**/*.kt",
+      "severity": "medium",
+      "message": "Use cases are typically per-injection scoped"
+    },
+    {
+      "id": "PREVENT_PACKAGE_INCONSISTENCY",
+      "description": "Avoid mixing example packages with actual project packages",
+      "pattern": {},
+      "filePattern": "**/*.kt",
+      "severity": "medium",
+      "message": "Replace com.example.starterdemo with actual project package name consistently"
+    },
+    {
+      "id": "USE_CASE_SINGLE_RESPONSIBILITY",
+      "description": "Use cases should follow single responsibility principle",
+      "pattern": {},
+      "filePattern": "**/*UseCase*.kt",
+      "severity": "medium",
+      "message": "Use cases should have single responsibility (operator invoke only), create separate use cases for different operations"
+    },
+    {
+      "id": "PREVENT_SEQUENTIAL_API_CALLS",
+      "description": "Avoid N+1 query patterns with sequential API calls",
+      "pattern": {},
+      "filePattern": "**/*DataSource*.kt",
+      "severity": "medium",
+      "message": "Use batch API calls instead of sequential calls to prevent performance issues"
+    }
+  ]
+}

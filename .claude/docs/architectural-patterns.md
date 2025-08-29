@@ -288,6 +288,56 @@ features/feature-name/
     - ✅ Create separate use cases for different operations
     - Example: Don't add `refresh()` method to GetPokemonListUseCase
 
+### TypeConverter Anti-Patterns (NEW - Found in DeepSeekPokeAppTen)
+13. **Empty TypeConverter Classes** ⚠️ **ARCHITECTURAL**
+    - ❌ Creating TypeConverter classes with no actual converter methods
+    - ❌ JSON fields in entities without corresponding TypeConverters
+    - ✅ Always implement actual TypeConverters for JSON fields:
+    ```kotlin
+    // ❌ WRONG - Empty TypeConverter class
+    @TypeConverter
+    class PokemonTypeConverters {
+        // Empty class with no converters!
+    }
+    
+    // ✅ CORRECT - Implement actual converters
+    @TypeConverter
+    class PokemonTypeConverters {
+        @TypeConverter
+        fun fromTypeList(types: List<PokemonType>): String = Json.encodeToString(types)
+        
+        @TypeConverter
+        fun toTypeList(typesJson: String): List<PokemonType> = Json.decodeFromString(typesJson)
+    }
+    ```
+    - **Impact**: Missed opportunity for proper type safety, JSON parsing overhead remains
+
+14. **Inconsistent JSON Field Handling**
+    - ❌ Some JSON fields as strings, others as proper objects
+    - ❌ Mixing TypeConverters with manual JSON parsing
+    - ✅ Consistent approach across all complex field types
+    - **Impact**: Code inconsistency, maintenance complexity
+
+### Database Configuration Anti-Patterns (NEW - Found in DeepSeekPokeAppTen)
+15. **Missing Build-Aware Database Configuration** ⚠️ **PRODUCTION CRITICAL**
+    - ❌ Room database without any migration or fallback strategy
+    - ❌ Same configuration for debug and release builds
+    - ✅ Environment-aware database configuration:
+    ```kotlin
+    // ❌ WRONG - No migration strategy
+    Room.databaseBuilder(context, AppDatabase::class.java, "app_database").build()
+    
+    // ✅ CORRECT - Build-aware configuration
+    Room.databaseBuilder(context, AppDatabase::class.java, "app_database")
+        .apply {
+            if (BuildConfig.DEBUG) {
+                fallbackToDestructiveMigration() // OK for development
+            }
+            // Add proper migrations for production
+        }.build()
+    ```
+    - **Impact**: Potential data loss during production app updates, crashes on schema changes
+
 ## Best Practices
 
 1. **Use project types** for consistent setup
@@ -300,3 +350,44 @@ features/feature-name/
 8. **Use BuildConfig for environment-specific configurations**
 9. **Optimize API call patterns** to avoid sequential loading
 10. **Implement proper database migration strategies** for production
+
+## Updated Best Practices (Based on DeepSeekPokeAppTen Audit)
+
+### Security & Production Readiness
+11. **CRITICAL: Always implement BuildConfig-aware HTTP logging**
+    - Never hardcode `HttpLoggingInterceptor.Level.BODY` for all builds
+    - Use `BuildConfig.DEBUG` to control logging levels
+    - Verify no sensitive data in production logs
+
+12. **Environment-aware database configuration**
+    - Use `.fallbackToDestructiveMigration()` only in debug builds
+    - Always plan proper migrations for production
+    - Test database upgrades before release
+
+### Database & Performance Optimization
+13. **Implement meaningful TypeConverters**
+    - Don't create empty TypeConverter classes
+    - Always provide actual converters for JSON fields
+    - Use typed properties instead of JSON strings where possible
+
+14. **Consistent data modeling approach**
+    - Use either TypeConverters OR Room relationships consistently
+    - Avoid mixing JSON strings with proper object types
+    - Plan for SQL query requirements when choosing storage approach
+
+### Template Generation Quality
+15. **Generate complete, functional code templates**
+    - No empty classes or placeholder implementations
+    - Always provide working examples with proper patterns
+    - Include security-aware configurations by default
+
+### Continuous Improvement Process
+16. **Run `/audit-project` after every feature generation**
+    - Identify issues early in development
+    - Learn from each project to improve templates
+    - Document common anti-patterns for prevention
+
+17. **Use `/improve-generator` regularly**
+    - Update templates based on real project findings
+    - Build institutional knowledge from all projects
+    - Prevent recurring issues across team

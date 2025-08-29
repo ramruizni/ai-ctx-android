@@ -128,6 +128,15 @@ class TemplateValidator {
                     message: 'DATA CRITICAL: Destructive migration causes data loss in production updates'
                 },
                 {
+                    id: 'REQUIRE_BUILD_AWARE_DATABASE_CONFIG',
+                    description: 'Database configuration must be build-aware (debug vs production)',
+                    pattern: /Room\.databaseBuilder\(/,
+                    requiresPattern: /\.apply\s*\{[\s\S]*?BuildConfig\.DEBUG[\s\S]*?\}\.build\(\)/,
+                    filePattern: '**/*DatabaseModule*.kt',
+                    severity: 'critical',
+                    message: 'PRODUCTION CRITICAL: Database must have different configurations for debug vs production builds'
+                },
+                {
                     id: 'PREVENT_ROOM_ENTITY_IN_DATASOURCE',
                     description: 'Room entities must not be in DataSource layer - architectural violation',
                     pattern: /@Entity\(tableName\s*=\s*"/,
@@ -167,6 +176,23 @@ class TemplateValidator {
                     filePattern: '**/datasource/**/build.gradle.kts',
                     severity: 'high',
                     message: 'DataSource module must depend on Database module for proper layer separation'
+                },
+                {
+                    id: 'PREVENT_EMPTY_TYPECONVERTER_CLASSES',
+                    description: 'TypeConverter classes must contain actual converter methods',
+                    pattern: /class \w*TypeConverters?\s*\{[\s\S]*?\}/,
+                    requiresPattern: /@TypeConverter\s+fun/,
+                    filePattern: '**/*TypeConverter*.kt',
+                    severity: 'high',
+                    message: 'ARCHITECTURAL ISSUE: Empty TypeConverter classes provide no value - implement actual converters or remove'
+                },
+                {
+                    id: 'PREVENT_INCONSISTENT_JSON_HANDLING',
+                    description: 'JSON fields must have consistent handling approach',
+                    pattern: /val\s+\w+:\s+String.*\/\/.*JSON|val\s+\w+:\s+String.*json/i,
+                    filePattern: '**/*Entity*.kt',
+                    severity: 'medium',
+                    message: 'CONSISTENCY ISSUE: Use either TypeConverters OR proper object types consistently across all JSON fields'
                 }
             ],
             medium: [
