@@ -1,0 +1,13 @@
+{
+  "packageName": "com.ramruizni.deepseekpokeappnine",
+  "projectName": "DeepSeekPokeAppNine",
+  "createdAt": "2025-08-29T12:00:00Z",
+  "aiCtxAndroidVersion": "gen-improvements",
+  "architecturalPreferences": {
+    "diModuleStyle": "object-provides",
+    "useCasePattern": "simple-pattern",
+    "logging": "none",
+    "injectionPattern": "manual-instantiation"
+  },
+  "customDependencies": []
+}
