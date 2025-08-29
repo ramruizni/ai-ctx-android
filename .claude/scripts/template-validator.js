@@ -73,6 +73,15 @@ class TemplateValidator {
                     message: 'App module must include view module dependencies for UI accessibility'
                 },
                 {
+                    id: 'REQUIRE_VIEWMODEL_MODULE_DEPENDENCY',
+                    description: 'App module must include viewmodel module dependencies when view modules exist',
+                    pattern: /implementation\(project\(":.*:view"\)\)/,
+                    requiresPattern: /implementation\(project\(":.*:viewmodel"\)\)/,
+                    filePattern: '**/app/**/build.gradle.kts',
+                    severity: 'critical',
+                    message: 'CRITICAL: App module must include viewmodel dependencies to prevent runtime crashes during navigation'
+                },
+                {
                     id: 'PREVENT_HARDCODED_SECRETS',
                     description: 'API keys and secrets must not be hardcoded in templates',
                     pattern: /(?:api[_-]?key|token|secret|password)\s*=\s*"[^"]{8,}"/i,
@@ -161,6 +170,14 @@ class TemplateValidator {
                     message: 'SILENT FAILURE: Errors must be logged and propagated, not hidden with empty results'
                 },
                 {
+                    id: 'PREVENT_SILENT_NETWORK_ERROR_HANDLING',
+                    description: 'Network exceptions must not be silently caught and return empty results',
+                    pattern: /catch\s*\([^}]*Exception[^}]*\)\s*\{\s*(?:return\s+)?emptyList\(\)\s*\}/,
+                    filePattern: '**/*DataSource*.kt',
+                    severity: 'high',
+                    message: 'NETWORK ERROR CRITICAL: Network failures must be logged with user-friendly error messages, not hidden with empty results'
+                },
+                {
                     id: 'PREVENT_JSON_STRING_STORAGE',
                     description: 'Complex data should not be stored as JSON strings in database',
                     pattern: /val\s+\w+:\s+String.*\/\/.*JSON/,
@@ -236,6 +253,14 @@ class TemplateValidator {
                     filePattern: '**/*DataSource*.kt',
                     severity: 'medium',
                     message: 'Use batch API calls instead of sequential calls to prevent performance issues'
+                },
+                {
+                    id: 'PREVENT_N_PLUS_ONE_API_PATTERN',
+                    description: 'Avoid N+1 API call patterns with individual calls for each item in a list',
+                    pattern: /forEach\s*\{[^}]*apiService\./,
+                    filePattern: '**/*DataSource*.kt',
+                    severity: 'high',
+                    message: 'PERFORMANCE CRITICAL: Individual API calls for each item cause slow loading. Use batch processing or paginated loading instead'
                 }
             ]
         };

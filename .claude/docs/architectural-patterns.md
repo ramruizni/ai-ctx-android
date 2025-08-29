@@ -338,6 +338,75 @@ features/feature-name/
     ```
     - **Impact**: Potential data loss during production app updates, crashes on schema changes
 
+### Module Dependency Anti-Patterns (NEW - Found in DeepSeekPokeAppEleven)
+16. **Missing ViewModel Module Dependencies** ⚠️ **BUILD CRITICAL**
+    - ❌ App module not including viewmodel feature modules in dependencies
+    - ❌ Runtime crashes when trying to navigate to screens with ViewModels
+    - ✅ Always include viewmodel dependencies in app module:
+    ```kotlin
+    // app/build.gradle.kts
+    dependencies {
+        implementation(project(":features:pokemon:view"))
+        implementation(project(":features:pokemon:viewmodel")) // CRITICAL: Don't forget this!
+    }
+    ```
+    - **Impact**: Runtime crashes, navigation failures, dependency injection issues
+
+17. **Room Entity Layer Violation** ⚠️ **ARCHITECTURAL CRITICAL** 
+    - ❌ Adding `@Entity` annotations directly to DataSource DTOs
+    - ❌ Violates Clean Architecture separation of concerns
+    - ✅ Keep entities in database module, DTOs clean:
+    ```kotlin
+    // ❌ WRONG - In datasource/src/.../PokemonDbDto.kt
+    @Entity(tableName = "pokemon")
+    data class PokemonDbDto(...)
+    
+    // ✅ CORRECT - Keep separate
+    // database/src/.../PokemonEntity.kt - with @Entity
+    // datasource/src/.../PokemonDbDto.kt - without annotations
+    ```
+    - **Impact**: Architectural violation, difficult to swap persistence technology
+
+### Network Error Handling Anti-Patterns (NEW - Found in DeepSeekPokeAppEleven)
+18. **Silent Network Error Handling** ⚠️ **USER EXPERIENCE CRITICAL**
+    - ❌ Catching network exceptions and returning empty lists without logging
+    - ❌ Users see empty states instead of error messages for connectivity issues
+    - ✅ Proper error propagation with user-friendly messages:
+    ```kotlin
+    // ❌ WRONG - Silent error handling
+    } catch (e: Exception) {
+        emptyList() // User has no idea what went wrong!
+    }
+    
+    // ✅ CORRECT - Error propagation
+    } catch (e: IOException) {
+        logger.error("Network error loading Pokemon", e)
+        throw NetworkException("Failed to load Pokemon. Please check your internet connection.", e)
+    } catch (e: Exception) {
+        logger.error("Unexpected error loading Pokemon", e)
+        throw DataSourceException("An unexpected error occurred.", e)
+    }
+    ```
+    - **Impact**: Poor user experience, difficult to diagnose issues, silent failures
+
+### Performance Anti-Patterns (UPDATED - Found in DeepSeekPokeAppEleven)  
+19. **N+1 Network Query Pattern** ⚠️ **PERFORMANCE CRITICAL**
+    - ❌ Making individual API calls for each Pokemon in a list instead of batch requests
+    - ❌ Sequential API calls causing slow loading and poor user experience
+    - ✅ Implement batch processing or paginated loading:
+    ```kotlin
+    // ❌ WRONG - Individual calls for each Pokemon
+    pokemonList.forEach { pokemon ->
+        apiService.getPokemonDetails(pokemon.id) // N+1 problem!
+    }
+    
+    // ✅ CORRECT - Batch or paginated approach
+    apiService.getPokemonDetailsBatch(pokemonIds)
+    // OR
+    apiService.getPokemonList(page, limit) // Paginated loading
+    ```
+    - **Impact**: Slow loading times, poor performance on slow connections, excessive API usage
+
 ## Best Practices
 
 1. **Use project types** for consistent setup
@@ -391,3 +460,31 @@ features/feature-name/
     - Update templates based on real project findings
     - Build institutional knowledge from all projects
     - Prevent recurring issues across team
+
+## Updated Best Practices (Based on DeepSeekPokeAppEleven Audit)
+
+### Critical Module Dependencies
+18. **CRITICAL: Always include viewmodel module dependencies**
+    - Never forget to add viewmodel modules to app dependencies
+    - Runtime crashes occur if ViewModels can't be injected during navigation
+    - Create dependency validation templates to prevent this
+
+### Clean Architecture Enforcement  
+19. **Strict layer separation for Room entities**
+    - Keep `@Entity` annotations only in database module
+    - DataSource DTOs must remain framework-agnostic
+    - Templates should enforce this separation automatically
+
+### Error Handling Excellence
+20. **Implement comprehensive error handling patterns**
+    - Never silently catch and ignore exceptions
+    - Always provide user-friendly error messages
+    - Include proper logging for debugging
+    - Distinguish between network, data, and unexpected errors
+
+### Performance-First Development
+21. **Optimize API call patterns from the start**
+    - Design for batch operations instead of individual calls
+    - Implement proper pagination strategies
+    - Consider caching for frequently accessed data
+    - Templates should include performance-optimized patterns
