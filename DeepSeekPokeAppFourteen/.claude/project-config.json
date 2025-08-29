@@ -1,0 +1,13 @@
+{
+  "packageName": "com.ramruizni.deepseekpokeappfourteen",
+  "projectName": "DeepSeekPokeAppFourteen",
+  "createdAt": "2025-08-29T18:26:00Z",
+  "aiCtxAndroidVersion": "c32bfa3b6609a56473bd566d1f50c1e7a27e2c35",
+  "architecturalPreferences": {
+    "diModuleStyle": "object-provides",
+    "useCasePattern": "simple-pattern",
+    "logging": "none",
+    "injectionPattern": "manual-instantiation"
+  },
+  "customDependencies": []
+}
