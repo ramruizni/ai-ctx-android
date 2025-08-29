@@ -27,16 +27,26 @@ class TemplateValidator {
             return JSON.parse(fs.readFileSync(this.rulesPath, 'utf8'));
         }
 
-        // Default expert-level validation rules enhanced with audit findings
+        // Default expert-level validation rules enhanced with audit findings from DeepSeekPokeAppFourteen
         const defaultRules = {
             critical: [
                 {
-                    id: 'PREVENT_CIRCULAR_DEPENDENCIES',
-                    description: 'Database modules must not depend on datasource modules',
+                    id: 'REQUIRE_DATASOURCE_DEPENDENCY_UNCOMMENTED',
+                    description: 'Database modules must depend on datasource modules and dependency must not be commented',
                     pattern: /implementation\(project\(":.*:datasource"\)\)/,
+                    antiPattern: /\/\/.*implementation\(project\(":.*:datasource"\)\)/,
                     filePattern: '**/database/**/build.gradle.kts',
                     severity: 'critical',
-                    message: 'Database module cannot depend on datasource module - creates circular dependency'
+                    message: 'CRITICAL: Database module missing or commented datasource dependency causes type inconsistencies'
+                },
+                {
+                    id: 'PREVENT_STATIC_HTTP_LOGGING_PRODUCTION',
+                    description: 'HTTP logging level must be BuildConfig-aware for production safety',
+                    pattern: /level\s*=\s*HttpLoggingInterceptor\.Level\.(BASIC|BODY|HEADERS)(?!\s*\))/,
+                    requiresPattern: /BuildConfig\.DEBUG|if\s*\(\s*BuildConfig\.DEBUG\s*\)/,
+                    filePattern: '**/*NetworkModule*.kt',
+                    severity: 'critical',
+                    message: 'SECURITY CRITICAL: Static HTTP logging exposes sensitive data in production logs'
                 },
                 {
                     id: 'ENFORCE_ENTITY_LOCATION',
@@ -88,6 +98,23 @@ class TemplateValidator {
                     filePattern: '**/*.kt',
                     severity: 'critical',
                     message: 'Use BuildConfig or secure storage for secrets, never hardcode them'
+                },
+                {
+                    id: 'PREVENT_INCONSISTENT_DI_SCOPING_VIEWMODEL_COMPONENT',
+                    description: 'Use cases should be in SingletonComponent not ViewModelComponent for sharing across ViewModels',
+                    pattern: /@InstallIn\(ViewModelComponent::class\)/,
+                    requiresPattern: /UseCase/,
+                    filePattern: '**/*DomainModule*.kt',
+                    severity: 'critical',
+                    message: 'PERFORMANCE CRITICAL: Use cases in ViewModelComponent are recreated for each ViewModel instance'
+                },
+                {
+                    id: 'PREVENT_CROSS_LAYER_DATABASE_ENTITY_IMPORTS',
+                    description: 'Infrastructure layer must not directly import database entities',
+                    pattern: /import\s+.*\.database\.entities\./,
+                    filePattern: '**/infrastructure/**/*.kt',
+                    severity: 'critical',
+                    message: 'ARCHITECTURAL VIOLATION: Infrastructure layer importing database entities violates dependency direction'
                 }
             ],
             high: [
@@ -202,6 +229,25 @@ class TemplateValidator {
                     filePattern: '**/*TypeConverter*.kt',
                     severity: 'high',
                     message: 'ARCHITECTURAL ISSUE: Empty TypeConverter classes provide no value - implement actual converters or remove'
+                },
+                {
+                    id: 'PREVENT_UNDERUTILIZED_TYPECONVERTER_INFRASTRUCTURE',
+                    description: 'TypeConverter classes should handle all complex object types not just basic string lists',
+                    pattern: /class \w*TypeConverters?[\s\S]*?@TypeConverter[\s\S]*?fun.*List<String>[\s\S]*?\}/,
+                    requiresPattern: /@TypeConverter[\s\S]*?fun.*(?:PokemonType|PokemonAbility|PokemonStat)/,
+                    filePattern: '**/*TypeConverter*.kt',
+                    severity: 'high',
+                    message: 'ARCHITECTURAL ISSUE: TypeConverter infrastructure exists but underutilized - add converters for all complex object types'
+                },
+                {
+                    id: 'PREVENT_MANUAL_JSON_PARSING_WITH_TYPECONVERTERS',
+                    description: 'Avoid manual JSON parsing when TypeConverters exist for type safety',
+                    pattern: /Json\.decodeFromString|Json\.encodeToString|jsonDecoder\.decode/,
+                    requiresPattern: /TypeConverter/,
+                    sameFile: false,
+                    filePattern: '**/infrastructure/**/mappers/*.kt',
+                    severity: 'high',
+                    message: 'PERFORMANCE ISSUE: Use TypeConverter methods instead of manual JSON parsing for consistency and type safety'
                 },
                 {
                     id: 'PREVENT_INCONSISTENT_JSON_HANDLING',

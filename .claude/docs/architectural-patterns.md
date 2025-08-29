@@ -488,3 +488,102 @@ features/feature-name/
     - Implement proper pagination strategies
     - Consider caching for frequently accessed data
     - Templates should include performance-optimized patterns
+
+## Latest Findings (DeepSeekPokeAppFourteen - August 2025)
+
+### NEW Critical Anti-Patterns Discovered
+
+#### 22. **Missing Datasource Dependencies in Database Modules** ⚠️ **BUILD CRITICAL**
+- ❌ Database modules with commented out datasource dependencies
+- ❌ Creates potential type inconsistencies and access issues
+- ✅ Always ensure database modules depend on datasource modules:
+```kotlin
+// database/build.gradle.kts
+dependencies {
+    implementation(project(":pokemon:datasource")) // CRITICAL: Never comment this out
+}
+```
+- **Impact**: DataSource implementations cannot directly access Database entities, forcing workarounds
+- **Found in**: DeepSeekPokeAppFourteen database module
+
+#### 23. **Static Production HTTP Logging** ⚠️ **SECURITY CRITICAL** 
+- ❌ HTTP logging level hardcoded to BASIC/BODY for all build variants
+- ❌ Production apps logging sensitive network data
+- ✅ Environment-aware HTTP logging configuration:
+```kotlin
+// ❌ WRONG - Static logging for all builds
+level = HttpLoggingInterceptor.Level.BASIC
+
+// ✅ CORRECT - Build-aware logging
+level = if (BuildConfig.DEBUG) {
+    HttpLoggingInterceptor.Level.BODY
+} else {
+    HttpLoggingInterceptor.Level.NONE // Critical for production
+}
+```
+- **Impact**: Sensitive user data exposed in production logs, compliance violations
+- **Found in**: DeepSeekPokeAppFourteen network module
+
+#### 24. **Inconsistent DI Scoping Patterns** ⚠️ **PERFORMANCE**
+- ❌ Mix of @Singleton and unscoped providers without architectural reasoning
+- ❌ Use cases scoped to ViewModelComponent instead of SingletonComponent
+- ✅ Consistent scoping strategy:
+```kotlin
+// Use cases should be SingletonComponent for sharing across ViewModels
+@InstallIn(SingletonComponent::class)
+object PokemonDomainModule {
+    @Singleton
+    @Provides
+    fun providesGetPokemonList(...): SuspendUseCase<...> { ... }
+}
+```
+- **Impact**: Unnecessary memory overhead or performance issues from re-creation
+- **Found in**: DeepSeekPokeAppFourteen DI modules
+
+### Architectural Improvements Identified
+
+#### 25. **Cross-Layer Type Mapping Issues**
+- ❌ Infrastructure layer directly importing database entities
+- ❌ Violates dependency inversion in Clean Architecture
+- ✅ Proper layer separation with mapping at correct boundaries
+- **Impact**: Tight coupling between layers, difficult to change persistence technology
+- **Prevention**: Templates should enforce layer separation automatically
+
+#### 26. **Underutilized TypeConverter Infrastructure**
+- ❌ TypeConverter classes exist but only handle basic string lists
+- ❌ Complex JSON objects still stored as raw strings requiring manual parsing
+- ✅ Complete TypeConverter implementation for all complex entity fields
+- **Impact**: Missed opportunity for type safety, performance overhead from JSON parsing
+- **Prevention**: Generate complete TypeConverter sets for all complex fields
+
+### Positive Patterns to Preserve
+
+#### 27. **Excellent Parallel API Processing** ✅ **PERFORMANCE BEST PRACTICE**
+- ✅ Proper use of coroutineScope with async/awaitAll for parallel network calls
+- ✅ Prevents N+1 query anti-patterns effectively
+- **Found in**: DeepSeekPokeAppFourteen repository implementation
+- **Impact**: Significantly faster loading times, optimal API usage
+- **Action**: Use this pattern as template for all API data fetching
+
+#### 28. **Complete Navigation Architecture** ✅ **ARCHITECTURAL BEST PRACTICE**
+- ✅ Type-safe navigation with proper route definitions
+- ✅ Complete NavHost setup with navigation graphs
+- **Found in**: DeepSeekPokeAppFourteen navigation module
+- **Impact**: Robust navigation system with compile-time safety
+- **Action**: Continue using this as reference for navigation templates
+
+### Template Generation Priorities
+
+#### High Priority Improvements
+1. **Database Module Dependencies**: Ensure datasource dependencies are never optional/commented
+2. **Environment-Aware Configurations**: All network/database configs must be BuildConfig-aware
+3. **DI Scope Consistency**: Establish and enforce consistent scoping patterns
+
+#### Medium Priority Improvements
+1. **Complete TypeConverter Generation**: Generate full converter sets for complex fields
+2. **Layer Separation Enforcement**: Prevent cross-layer imports in templates
+3. **Comprehensive Error Handling**: Include proper logging and user messaging patterns
+
+#### Low Priority Improvements
+1. **Documentation**: Update examples with latest best practices
+2. **Validation**: Enhance template validation to catch these issues early
