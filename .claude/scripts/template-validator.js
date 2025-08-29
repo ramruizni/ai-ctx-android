@@ -27,7 +27,7 @@ class TemplateValidator {
             return JSON.parse(fs.readFileSync(this.rulesPath, 'utf8'));
         }
 
-        // Default expert-level validation rules
+        // Default expert-level validation rules enhanced with audit findings
         const defaultRules = {
             critical: [
                 {
@@ -53,6 +53,32 @@ class TemplateValidator {
                     filePattern: '**/viewmodel/**/*ViewModel.kt',
                     severity: 'critical',
                     message: 'ViewModels should only inject use cases, not repositories directly'
+                },
+                {
+                    id: 'ENFORCE_NAVIGATION_HOST_IMPLEMENTATION',
+                    description: 'NavigationHost must be properly implemented, not empty or commented',
+                    pattern: /NavHost\s*\(/,
+                    requiresPattern: /startDestination/,
+                    filePattern: '**/NavigationHost.kt',
+                    severity: 'critical',
+                    message: 'NavigationHost must include proper startDestination and navigation setup'
+                },
+                {
+                    id: 'REQUIRE_VIEW_MODULE_DEPENDENCY',
+                    description: 'App module must include view module dependencies',
+                    pattern: /dependencies\s*\{/,
+                    requiresPattern: /implementation\(project\(":.*:view"\)\)/,
+                    filePattern: '**/app/**/build.gradle.kts',
+                    severity: 'critical',
+                    message: 'App module must include view module dependencies for UI accessibility'
+                },
+                {
+                    id: 'PREVENT_HARDCODED_SECRETS',
+                    description: 'API keys and secrets must not be hardcoded in templates',
+                    pattern: /(?:api[_-]?key|token|secret|password)\s*=\s*"[^"]{8,}"/i,
+                    filePattern: '**/*.kt',
+                    severity: 'critical',
+                    message: 'Use BuildConfig or secure storage for secrets, never hardcode them'
                 }
             ],
             high: [
@@ -82,6 +108,33 @@ class TemplateValidator {
                     sameFile: true,
                     severity: 'high',
                     message: 'Repository interfaces and implementations must be in separate files/modules'
+                },
+                {
+                    id: 'PREVENT_PRODUCTION_HTTP_LOGGING',
+                    description: 'HTTP logging should be debug-only configuration',
+                    pattern: /HttpLoggingInterceptor\.Level\.BODY/,
+                    requiresPattern: /BuildConfig\.DEBUG|if \(BuildConfig\.DEBUG\)/,
+                    filePattern: '**/*NetworkModule*.kt',
+                    severity: 'high',
+                    message: 'HTTP body logging must be wrapped in BuildConfig.DEBUG checks for production safety'
+                },
+                {
+                    id: 'PREVENT_DESTRUCTIVE_MIGRATION_PRODUCTION',
+                    description: 'Destructive migration should not be used in production',
+                    pattern: /fallbackToDestructiveMigration\(\)/,
+                    requiresPattern: /BuildConfig\.DEBUG|if \(BuildConfig\.DEBUG\)/,
+                    filePattern: '**/*DatabaseModule*.kt',
+                    severity: 'high',
+                    message: 'Destructive migration should only be enabled for debug builds to prevent data loss'
+                },
+                {
+                    id: 'REQUIRE_DATASOURCE_DATABASE_DEPENDENCY',
+                    description: 'DataSource module must depend on Database module',
+                    pattern: /dependencies\s*\{/,
+                    requiresPattern: /implementation\(project\(":database"\)\)/,
+                    filePattern: '**/datasource/**/build.gradle.kts',
+                    severity: 'high',
+                    message: 'DataSource module must depend on Database module for proper layer separation'
                 }
             ],
             medium: [
@@ -101,6 +154,30 @@ class TemplateValidator {
                     filePattern: '**/di/**/*.kt',
                     severity: 'medium',
                     message: 'Use cases are typically per-injection scoped'
+                },
+                {
+                    id: 'PREVENT_PACKAGE_INCONSISTENCY',
+                    description: 'Avoid mixing example packages with actual project packages',
+                    pattern: /com\.example\.starterdemo/,
+                    filePattern: '**/*.kt',
+                    severity: 'medium',
+                    message: 'Replace com.example.starterdemo with actual project package name consistently'
+                },
+                {
+                    id: 'USE_CASE_SINGLE_RESPONSIBILITY',
+                    description: 'Use cases should follow single responsibility principle',
+                    pattern: /class \w+UseCase.*\{[\s\S]*fun \w+\([\s\S]*fun \w+\(/,
+                    filePattern: '**/*UseCase*.kt',
+                    severity: 'medium',
+                    message: 'Use cases should have single responsibility (operator invoke only), create separate use cases for different operations'
+                },
+                {
+                    id: 'PREVENT_SEQUENTIAL_API_CALLS',
+                    description: 'Avoid N+1 query patterns with sequential API calls',
+                    pattern: /forEach[\s\S]*(?:suspend fun|apiService)/,
+                    filePattern: '**/*DataSource*.kt',
+                    severity: 'medium',
+                    message: 'Use batch API calls instead of sequential calls to prevent performance issues'
                 }
             ]
         };
@@ -369,25 +446,119 @@ class TemplateValidator {
      * Convert audit issue to validation rule
      */
     convertIssueToRule(issue, severity) {
-        switch (issue.code) {
-            case 'CIRCULAR_DEPENDENCY':
+        // Map audit findings to specific validation rules
+        const ruleMap = {
+            'NAVIGATION_HOST_EMPTY': {
+                id: 'NAV_HOST_IMPLEMENTATION_' + Date.now(),
+                description: 'NavigationHost must be properly implemented',
+                pattern: /NavHost\s*\(/,
+                requiresPattern: /startDestination/,
+                filePattern: '**/NavigationHost.kt',
+                severity,
+                message: 'NavigationHost cannot be empty or commented out'
+            },
+            'VIEW_MODULE_MISSING': {
+                id: 'VIEW_MODULE_DEP_' + Date.now(),
+                description: 'App module must include view dependencies',
+                pattern: /dependencies\s*\{/,
+                requiresPattern: /implementation\(project\(":.*:view"\)\)/,
+                filePattern: '**/app/**/build.gradle.kts',
+                severity,
+                message: 'App module must include view module for UI accessibility'
+            },
+            'HTTP_LOGGING_PRODUCTION': {
+                id: 'HTTP_LOG_CONFIG_' + Date.now(),
+                description: 'HTTP logging must be debug-only',
+                pattern: /HttpLoggingInterceptor\.Level\.BODY/,
+                requiresPattern: /BuildConfig\.DEBUG/,
+                filePattern: '**/*NetworkModule*.kt',
+                severity,
+                message: 'HTTP body logging must be debug-only for production safety'
+            },
+            'DESTRUCTIVE_MIGRATION': {
+                id: 'DB_MIGRATION_' + Date.now(),
+                description: 'Destructive migration should be debug-only',
+                pattern: /fallbackToDestructiveMigration\(\)/,
+                requiresPattern: /BuildConfig\.DEBUG/,
+                filePattern: '**/*DatabaseModule*.kt',
+                severity,
+                message: 'Destructive migration causes data loss in production'
+            },
+            'PACKAGE_INCONSISTENCY': {
+                id: 'PKG_CONSISTENCY_' + Date.now(),
+                description: 'Consistent package naming required',
+                pattern: /com\.example\.starterdemo/,
+                filePattern: '**/*.kt',
+                severity,
+                message: 'Replace example package names with actual project package'
+            },
+            'USE_CASE_SRP_VIOLATION': {
+                id: 'USE_CASE_SRP_' + Date.now(),
+                description: 'Use cases must follow single responsibility principle',
+                pattern: /fun \w+\([\s\S]*fun \w+\(/,
+                filePattern: '**/*UseCase*.kt',
+                severity,
+                message: 'Create separate use cases for different operations'
+            }
+        };
+
+        // Try to match issue to known patterns
+        for (const [pattern, rule] of Object.entries(ruleMap)) {
+            if (issue.description && issue.description.includes(pattern.toLowerCase().replace('_', ' '))) {
+                return rule;
+            }
+        }
+
+        // Fallback for unmapped issues
+        switch (issue.category) {
+            case 'Navigation':
                 return {
-                    id: 'PREVENT_CIRCULAR_DEP_' + Date.now(),
-                    description: 'Prevent specific circular dependency pattern',
+                    id: 'NAV_ISSUE_' + Date.now(),
+                    description: 'Navigation-related validation',
+                    pattern: this.extractPatternFromIssue(issue),
+                    filePattern: '**/navigation/**/*.kt',
+                    severity,
+                    message: issue.description || issue.message
+                };
+
+            case 'Dependencies':
+                return {
+                    id: 'DEP_ISSUE_' + Date.now(),
+                    description: 'Dependency-related validation',
                     pattern: this.extractPatternFromIssue(issue),
                     filePattern: '**/*.gradle.kts',
                     severity,
-                    message: issue.message
+                    message: issue.description || issue.message
                 };
 
-            case 'ARCHITECTURE_VIOLATION':
+            case 'Performance':
                 return {
-                    id: 'ARCHITECTURE_RULE_' + Date.now(),
-                    description: 'Prevent architectural violation',
+                    id: 'PERF_ISSUE_' + Date.now(),
+                    description: 'Performance-related validation',
                     pattern: this.extractPatternFromIssue(issue),
                     filePattern: '**/*.kt',
                     severity,
-                    message: issue.message
+                    message: issue.description || issue.message
+                };
+
+            case 'Database':
+                return {
+                    id: 'DB_ISSUE_' + Date.now(),
+                    description: 'Database-related validation',
+                    pattern: this.extractPatternFromIssue(issue),
+                    filePattern: '**/*Database*.kt',
+                    severity,
+                    message: issue.description || issue.message
+                };
+
+            case 'Architecture':
+                return {
+                    id: 'ARCH_ISSUE_' + Date.now(),
+                    description: 'Architecture-related validation',
+                    pattern: this.extractPatternFromIssue(issue),
+                    filePattern: '**/*.kt',
+                    severity,
+                    message: issue.description || issue.message
                 };
 
             default:
