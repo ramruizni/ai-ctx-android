@@ -1,0 +1,482 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+
+/**
+ * Template Validation System
+ * 
+ * Validates code generation templates against expert-defined rules
+ * to prevent generation of projects with architectural violations.
+ */
+
+class TemplateValidator {
+    constructor(verbose = false) {
+        this.verbose = verbose;
+        this.templatesPath = path.resolve(__dirname, '../templates');
+        this.rulesPath = path.resolve(__dirname, '../template-validation-rules.json');
+        this.validationRules = this.loadValidationRules();
+        this.violations = [];
+    }
+
+    /**
+     * Load validation rules from JSON file or create default ones
+     */
+    loadValidationRules() {
+        if (fs.existsSync(this.rulesPath)) {
+            return JSON.parse(fs.readFileSync(this.rulesPath, 'utf8'));
+        }
+
+        // Default expert-level validation rules
+        const defaultRules = {
+            critical: [
+                {
+                    id: 'PREVENT_CIRCULAR_DEPENDENCIES',
+                    description: 'Database modules must not depend on datasource modules',
+                    pattern: /implementation\(project\(":.*:datasource"\)\)/,
+                    filePattern: '**/database/**/build.gradle.kts',
+                    severity: 'critical',
+                    message: 'Database module cannot depend on datasource module - creates circular dependency'
+                },
+                {
+                    id: 'ENFORCE_ENTITY_LOCATION',
+                    description: 'Room entities must be in database module, not datasource',
+                    pattern: /@Entity/,
+                    filePattern: '**/datasource/**/*.kt',
+                    severity: 'critical', 
+                    message: 'Room entities must be in database module for proper separation of concerns'
+                },
+                {
+                    id: 'PREVENT_REPOSITORY_IN_VIEWMODEL',
+                    description: 'ViewModels must not directly inject repositories',
+                    pattern: /private val \w*[Rr]epository/,
+                    filePattern: '**/viewmodel/**/*ViewModel.kt',
+                    severity: 'critical',
+                    message: 'ViewModels should only inject use cases, not repositories directly'
+                }
+            ],
+            high: [
+                {
+                    id: 'ENFORCE_HILT_VIEWMODEL',
+                    description: 'ViewModels must use @HiltViewModel annotation',
+                    pattern: /class \w+ViewModel.*: ViewModel/,
+                    requiresPattern: /@HiltViewModel/,
+                    filePattern: '**/viewmodel/**/*ViewModel.kt',
+                    severity: 'high',
+                    message: 'All ViewModels must be annotated with @HiltViewModel for proper DI'
+                },
+                {
+                    id: 'PREVENT_INJECT_IN_NON_VIEWMODELS',
+                    description: 'Only ViewModels should use @Inject constructors',
+                    pattern: /@Inject constructor/,
+                    excludePattern: '**/viewmodel/**/*.kt',
+                    filePattern: '**/*.kt',
+                    severity: 'high',
+                    message: 'Use manual instantiation in DI modules instead of @Inject constructors'
+                },
+                {
+                    id: 'REQUIRE_INTERFACE_SEPARATION',
+                    description: 'Repository implementations must be separate from interfaces',
+                    pattern: /interface \w+Repository/,
+                    conflictPattern: /class \w+RepositoryImpl/,
+                    sameFile: true,
+                    severity: 'high',
+                    message: 'Repository interfaces and implementations must be in separate files/modules'
+                }
+            ],
+            medium: [
+                {
+                    id: 'CONSISTENT_STATE_MANAGEMENT',
+                    description: 'ViewModels should use single StateFlow pattern',
+                    pattern: /MutableStateFlow/,
+                    countLimit: 1,
+                    filePattern: '**/viewmodel/**/*ViewModel.kt',
+                    severity: 'medium',
+                    message: 'Use single StateFlow for UI state management'
+                },
+                {
+                    id: 'PROPER_SCOPE_USAGE',
+                    description: 'Use cases should not be marked as Singleton unless necessary',
+                    pattern: /@Singleton.*UseCase/,
+                    filePattern: '**/di/**/*.kt',
+                    severity: 'medium',
+                    message: 'Use cases are typically per-injection scoped'
+                }
+            ]
+        };
+
+        // Save default rules
+        this.saveValidationRules(defaultRules);
+        return defaultRules;
+    }
+
+    /**
+     * Save validation rules to file
+     */
+    saveValidationRules(rules) {
+        fs.writeFileSync(this.rulesPath, JSON.stringify(rules, null, 2));
+    }
+
+    /**
+     * Validate all templates against rules
+     */
+    async validateAllTemplates() {
+        console.log('🔍 Validating templates against expert rules...');
+
+        const templateFiles = this.findTemplateFiles();
+        
+        for (const templateFile of templateFiles) {
+            await this.validateTemplate(templateFile);
+        }
+
+        return this.generateValidationReport();
+    }
+
+    /**
+     * Find all template files
+     */
+    findTemplateFiles() {
+        const templates = [];
+        
+        const scanDirectory = (dir) => {
+            const entries = fs.readdirSync(dir);
+            
+            entries.forEach(entry => {
+                const fullPath = path.join(dir, entry);
+                const stat = fs.statSync(fullPath);
+                
+                if (stat.isDirectory()) {
+                    scanDirectory(fullPath);
+                } else if (entry.endsWith('.template')) {
+                    templates.push(fullPath);
+                }
+            });
+        };
+
+        if (fs.existsSync(this.templatesPath)) {
+            scanDirectory(this.templatesPath);
+        }
+
+        return templates;
+    }
+
+    /**
+     * Validate a single template file
+     */
+    async validateTemplate(templateFile) {
+        const relativePath = path.relative(this.templatesPath, templateFile);
+        if (this.verbose) {
+            console.log(`  Validating: ${relativePath}`);
+        }
+
+        const content = fs.readFileSync(templateFile, 'utf8');
+        
+        // Apply all validation rules
+        for (const [severity, rules] of Object.entries(this.validationRules)) {
+            for (const rule of rules) {
+                this.applyRule(rule, templateFile, content, relativePath);
+            }
+        }
+    }
+
+    /**
+     * Apply a single validation rule
+     */
+    applyRule(rule, templateFile, content, relativePath) {
+        // Check if file pattern matches
+        if (rule.filePattern && !this.matchesPattern(relativePath, rule.filePattern)) {
+            return;
+        }
+
+        // Check for pattern violations
+        if (rule.pattern && rule.pattern.test(content)) {
+            // Check if required pattern is also present (for complex rules)
+            if (rule.requiresPattern && !rule.requiresPattern.test(content)) {
+                this.addViolation(rule, templateFile, relativePath, 'Missing required pattern');
+                return;
+            }
+
+            // Check for conflict patterns (patterns that shouldn't coexist)
+            if (rule.conflictPattern && rule.conflictPattern.test(content) && rule.sameFile) {
+                this.addViolation(rule, templateFile, relativePath, 'Conflicting patterns in same file');
+                return;
+            }
+
+            // Check count limits
+            if (rule.countLimit) {
+                const matches = content.match(new RegExp(rule.pattern.source, 'g'));
+                if (matches && matches.length > rule.countLimit) {
+                    this.addViolation(rule, templateFile, relativePath, `Pattern appears ${matches.length} times, limit is ${rule.countLimit}`);
+                    return;
+                }
+            }
+
+            // Check exclusions
+            if (rule.excludePattern && this.matchesPattern(relativePath, rule.excludePattern)) {
+                return; // Pattern is excluded for this file type
+            }
+
+            // If we reach here, it's a simple pattern violation
+            if (!rule.requiresPattern && !rule.conflictPattern && !rule.countLimit) {
+                this.addViolation(rule, templateFile, relativePath, 'Pattern violation detected');
+            }
+        }
+    }
+
+    /**
+     * Check if path matches a pattern (supports glob-like patterns)
+     */
+    matchesPattern(filePath, pattern) {
+        // Simple glob pattern matching
+        const regexPattern = pattern
+            .replace(/\*\*/g, '.*')
+            .replace(/\*/g, '[^/]*')
+            .replace(/\?/g, '.');
+        
+        const regex = new RegExp(regexPattern);
+        return regex.test(filePath);
+    }
+
+    /**
+     * Add a validation violation
+     */
+    addViolation(rule, templateFile, relativePath, details) {
+        const violation = {
+            ruleId: rule.id,
+            severity: rule.severity,
+            description: rule.description,
+            message: rule.message,
+            details,
+            templateFile,
+            relativePath,
+            timestamp: new Date().toISOString()
+        };
+
+        this.violations.push(violation);
+
+        if (this.verbose) {
+            console.log(`    ❌ ${rule.severity.toUpperCase()}: ${rule.id} - ${details}`);
+        }
+    }
+
+    /**
+     * Generate comprehensive validation report
+     */
+    generateValidationReport() {
+        const report = {
+            timestamp: new Date().toISOString(),
+            summary: {
+                totalTemplates: this.findTemplateFiles().length,
+                totalViolations: this.violations.length,
+                critical: this.violations.filter(v => v.severity === 'critical').length,
+                high: this.violations.filter(v => v.severity === 'high').length,
+                medium: this.violations.filter(v => v.severity === 'medium').length,
+                isValid: this.violations.filter(v => v.severity === 'critical').length === 0
+            },
+            violations: this.violations,
+            recommendations: this.generateRecommendations()
+        };
+
+        return report;
+    }
+
+    /**
+     * Generate recommendations based on violations
+     */
+    generateRecommendations() {
+        const recommendations = [];
+
+        const criticalViolations = this.violations.filter(v => v.severity === 'critical');
+        if (criticalViolations.length > 0) {
+            recommendations.push({
+                priority: 'IMMEDIATE',
+                action: 'Fix critical template violations',
+                description: 'These violations will generate projects with build-breaking issues',
+                count: criticalViolations.length
+            });
+        }
+
+        const highViolations = this.violations.filter(v => v.severity === 'high');
+        if (highViolations.length > 0) {
+            recommendations.push({
+                priority: 'HIGH',
+                action: 'Address architectural violations in templates',
+                description: 'These violations create projects that don\'t follow Clean Architecture',
+                count: highViolations.length
+            });
+        }
+
+        // Group violations by rule for specific recommendations
+        const violationsByRule = this.violations.reduce((acc, violation) => {
+            if (!acc[violation.ruleId]) {
+                acc[violation.ruleId] = [];
+            }
+            acc[violation.ruleId].push(violation);
+            return acc;
+        }, {});
+
+        for (const [ruleId, violations] of Object.entries(violationsByRule)) {
+            if (violations.length > 1) {
+                recommendations.push({
+                    priority: violations[0].severity.toUpperCase(),
+                    action: `Fix recurring ${ruleId} violations`,
+                    description: `This rule is violated in ${violations.length} templates`,
+                    affectedTemplates: violations.map(v => v.relativePath)
+                });
+            }
+        }
+
+        return recommendations;
+    }
+
+    /**
+     * Update validation rules based on audit findings
+     */
+    updateRulesFromAudit(auditResults) {
+        console.log('📋 Updating validation rules from audit findings...');
+
+        const newRules = {
+            critical: [...this.validationRules.critical],
+            high: [...this.validationRules.high],
+            medium: [...this.validationRules.medium]
+        };
+
+        // Add rules based on critical audit issues
+        auditResults.issues.critical.forEach(issue => {
+            const rule = this.convertIssueToRule(issue, 'critical');
+            if (rule && !this.ruleExists(rule.id, newRules.critical)) {
+                newRules.critical.push(rule);
+                console.log(`  ✅ Added critical rule: ${rule.id}`);
+            }
+        });
+
+        // Add rules based on high-priority audit issues
+        auditResults.issues.high.forEach(issue => {
+            const rule = this.convertIssueToRule(issue, 'high');
+            if (rule && !this.ruleExists(rule.id, newRules.high)) {
+                newRules.high.push(rule);
+                console.log(`  ✅ Added high-priority rule: ${rule.id}`);
+            }
+        });
+
+        this.validationRules = newRules;
+        this.saveValidationRules(newRules);
+        
+        return newRules;
+    }
+
+    /**
+     * Convert audit issue to validation rule
+     */
+    convertIssueToRule(issue, severity) {
+        switch (issue.code) {
+            case 'CIRCULAR_DEPENDENCY':
+                return {
+                    id: 'PREVENT_CIRCULAR_DEP_' + Date.now(),
+                    description: 'Prevent specific circular dependency pattern',
+                    pattern: this.extractPatternFromIssue(issue),
+                    filePattern: '**/*.gradle.kts',
+                    severity,
+                    message: issue.message
+                };
+
+            case 'ARCHITECTURE_VIOLATION':
+                return {
+                    id: 'ARCHITECTURE_RULE_' + Date.now(),
+                    description: 'Prevent architectural violation',
+                    pattern: this.extractPatternFromIssue(issue),
+                    filePattern: '**/*.kt',
+                    severity,
+                    message: issue.message
+                };
+
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Check if rule already exists
+     */
+    ruleExists(ruleId, rulesList) {
+        return rulesList.some(rule => rule.id === ruleId);
+    }
+
+    /**
+     * Extract regex pattern from audit issue
+     */
+    extractPatternFromIssue(issue) {
+        // Simple pattern extraction - could be made more sophisticated
+        if (issue.message.includes('database') && issue.message.includes('datasource')) {
+            return /implementation\(project\(":.*:datasource"\)\)/;
+        }
+        
+        if (issue.message.includes('Repository') && issue.message.includes('ViewModel')) {
+            return /private val \w*[Rr]epository/;
+        }
+
+        // Generic pattern for other issues
+        return new RegExp(issue.message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    }
+
+    /**
+     * Save validation report
+     */
+    async saveValidationReport(report) {
+        const reportsDir = path.resolve(__dirname, '../validation-reports');
+        if (!fs.existsSync(reportsDir)) {
+            fs.mkdirSync(reportsDir, { recursive: true });
+        }
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const reportFile = path.join(reportsDir, `template-validation-${timestamp}.json`);
+        
+        fs.writeFileSync(reportFile, JSON.stringify(report, null, 2));
+        console.log(`📊 Validation report saved to: ${reportFile}`);
+        
+        return reportFile;
+    }
+}
+
+// CLI interface
+if (require.main === module) {
+    const args = process.argv.slice(2);
+    const command = args[0];
+    const verbose = args.includes('--verbose');
+
+    const validator = new TemplateValidator(verbose);
+
+    if (command === 'validate') {
+        validator.validateAllTemplates().then(report => {
+            console.log('\n📋 Template validation completed!');
+            console.log(`Total violations: ${report.summary.totalViolations}`);
+            
+            if (report.summary.critical > 0) {
+                console.log(`🚨 ${report.summary.critical} critical violations found`);
+                process.exit(1);
+            }
+            
+            validator.saveValidationReport(report);
+        }).catch(error => {
+            console.error('Template validation failed:', error);
+            process.exit(1);
+        });
+    } else if (command === 'update-rules') {
+        const auditFile = args[1];
+        if (!auditFile) {
+            console.error('Usage: template-validator.js update-rules <audit-results.json>');
+            process.exit(1);
+        }
+        
+        const auditResults = JSON.parse(fs.readFileSync(auditFile, 'utf8'));
+        const updatedRules = validator.updateRulesFromAudit(auditResults);
+        console.log(`✅ Updated validation rules with ${Object.values(updatedRules).flat().length} total rules`);
+    } else {
+        console.log('Usage:');
+        console.log('  template-validator.js validate [--verbose]');
+        console.log('  template-validator.js update-rules <audit-results.json> [--verbose]');
+        process.exit(1);
+    }
+}
+
+module.exports = TemplateValidator;

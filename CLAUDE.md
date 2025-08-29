@@ -30,6 +30,10 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 - `/setup-db` - Setup/update database module in any project (supports `--target` parameter) 
 - `/setup-navigation` - Create navigation routes and graphs in any project (supports `--target` parameter)
 
+### 🔧 Quality Assurance & Continuous Improvement Commands
+- **`/audit-project`** - **NEW** - Run expert-level Android audit on generated projects with 10+ years of architectural experience
+- **`/improve-generator`** - **NEW** - Complete audit → documentation improvement → template validation cycle to make generator smarter
+
 ## Project Types (Recommended)
 - **`default`**: Standard Clean Architecture with simple use cases
 - **`57blocks-common`**: 57blocks projects with UseCaseResult pattern and basedomain architecture
@@ -90,6 +94,47 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 # Then add features with descriptions
 /create-feature WorkoutTracker --project-type default --target /my/projects/FitnessTracker "Workout tracking with exercise library, timer, progress charts, and workout history"
 ```
+
+#### Quality Assurance & Continuous Improvement Workflow
+```bash
+# RECOMMENDED: Run after every project/feature creation
+# This makes the generator smarter and prevents future issues
+
+# Complete improvement cycle (recommended after new projects)
+/improve-generator /full/path/to/NewProject
+
+# OR run individual commands for granular control:
+
+# 1. Expert audit only (identifies architectural issues)
+/audit-project /full/path/to/NewProject
+
+# 2. After creating multiple projects, improve the generator
+/improve-generator /full/path/to/RecentProject
+
+# 3. Validate templates before creating new projects (optional)
+node .claude/scripts/template-validator.js validate --verbose
+```
+
+#### Expert Audit Capabilities
+The audit system provides **enterprise-grade** analysis equivalent to a **10-year senior Android engineer**:
+
+- **🚨 Critical Issues**: Build-breaking problems (circular dependencies, missing files)
+- **⚠️ Architectural Violations**: Clean Architecture compliance, layer separation
+- **🔧 DI Pattern Issues**: Hilt setup, injection patterns, scope violations  
+- **🗄️ Database Layer**: Room implementation, entity placement, TypeConverters
+- **📱 ViewModel Patterns**: State management, dependency injection, lifecycle awareness
+- **🧭 Navigation Setup**: Route definitions, navigation patterns
+- **🔒 Security Issues**: Hardcoded secrets, insecure storage, permission usage
+- **⚡ Performance**: Memory leaks, UI thread blocking, unoptimized queries
+
+#### Documentation Self-Improvement
+Every audit automatically improves this documentation:
+
+- **Anti-patterns Guide**: Common mistakes and how to avoid them
+- **Template Validation**: Prevents bad code generation
+- **Best Practices**: Updated based on real issues found
+- **Troubleshooting**: Solutions for common problems
+- **Architectural Patterns**: Enhanced with discovered violations
 
 ## Cross-Project Capabilities
 - **Flexible location**: Create and manage projects anywhere on your system
