@@ -1,18 +1,36 @@
 package com.ramruizni.deepseekpokeappseven.database
 
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
-//import com.ramruizni.deepseekpokeappseven.demo.datasource.daos.DemoDao
-//import com.ramruizni.deepseekpokeappseven.demo.datasource.dbdtos.DemoDbDto
+import android.content.Context
+import com.ramruizni.deepseekpokeappseven.database.entities.PokemonDao
+import com.ramruizni.deepseekpokeappseven.database.entities.PokemonDbDto
 
-/*@Database(
+@Database(
     entities = [
-        // NEW ENTITIES GO HERE
-        //DemoDbDto::class
+        PokemonDbDto::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = true
 )
 abstract class DeepSeekPokeAppSevenDatabase : RoomDatabase() {
-    // NEW DAOS GO HERE
-    //abstract fun demoDao(): DemoDao
-}*/
+    abstract fun pokemonDao(): PokemonDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: DeepSeekPokeAppSevenDatabase? = null
+
+        fun getDatabase(context: Context): DeepSeekPokeAppSevenDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    DeepSeekPokeAppSevenDatabase::class.java,
+                    "deepseek_poke_app_seven_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}

@@ -9,6 +9,6 @@ android {
 }
 
 dependencies {
-    // DATA SOURCE MODULES GO HERE
-//    implementation(project(":demo:datasource"))
+    // DOMAIN MODULES GO HERE
+    implementation(project(":pokemon:domain"))
 }

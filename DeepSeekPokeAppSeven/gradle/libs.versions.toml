@@ -16,7 +16,9 @@ kotlinxSerializationPlugin = "2.2.0"
 ksp = "2.2.0-2.0.2"
 lifecycleRuntimeKtx = "2.9.2"
 lifecycleViewmodelKtx = "2.9.2"
+retrofit = "2.11.0"
 room = "2.7.2"
+coil = "2.7.0"
 
 
 [libraries]
@@ -54,6 +56,15 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
+# Network
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version = "4.12.0" }
+
+# Image Loading
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 
 [plugins]
