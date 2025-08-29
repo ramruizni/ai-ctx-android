@@ -1,0 +1,127 @@
+[versions]
+activityCompose = "1.10.1"
+agp = "8.10.0"
+androidDesugarJdkLibs = "2.1.5"
+androidxHiltNavigationCompose = "1.2.0"
+androidxNavigation = "2.9.2"
+composeBom = "2025.07.00"
+coreKtx = "1.16.0"
+hilt = "2.57"
+jetbrainsKotlinJvm = "2.2.0"
+kotlin = "2.2.0"
+kotlinGradlePlugin = "1.8.20"
+kotlinxCoroutines = "1.10.2"
+kotlinxSerializationJson = "1.9.0"
+kotlinxSerializationPlugin = "2.2.0"
+ksp = "2.2.0-2.0.2"
+lifecycleRuntimeKtx = "2.9.2"
+lifecycleViewmodelKtx = "2.9.2"
+retrofit = "2.11.0"
+retrofitKotlinxSerializationJson = "2.11.0"
+okhttp = "4.12.0"
+room = "2.7.2"
+coil = "2.5.0"
+
+
+[libraries]
+android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui-core = { group = "androidx.compose.ui", name = "ui", version = "unspecified" }  # Version comes from androidx-compose-bom
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose" } # What is this version?
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+# Network
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-kotlinx-serialization-json = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofitKotlinxSerializationJson" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+# Hilt
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
+
+# Room
+room-common = { group = "androidx.room", name = "room-common", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
+# Coil Image Loading
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+coil-base = { group = "io.coil-kt", name = "coil-base", version.ref = "coil" }
+
+
+[plugins]
+
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerializationPlugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+
+# Base Convention Plugins
+convention-android-application = { id = "convention.android.application", version = "unspecified" }
+convention-android-application-compose = { id = "convention.android.application.compose", version = "unspecified" }
+convention-android-library = { id = "convention.android.library", version = "unspecified" }
+convention-android-room = { id = "convention.android.room", version = "unspecified" }
+convention-android-library-compose = { id = "convention.android.library.compose", version = "unspecified" }
+convention-hilt = { id = "convention.hilt", version = "unspecified" }
+convention-jvm-library = { id = "convention.jvm.library", version = "unspecified" }
+
+# Architecture Convention Plugins
+convention-arch-view = { id = "convention.arch.view", version = "unspecified" }
+convention-arch-viewmodel = { id = "convention.arch.viewmodel", version = "unspecified" }
+
+
+[bundles]
+
+android-ui = [
+    "androidx-core-ktx",
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-material3",
+    "androidx-ui-tooling-preview",
+]
+
+androidx-compose = [
+    "androidx-activity-compose",
+    "androidx-compose-ui-core",
+    "androidx-navigation-compose",
+    "androidx-hilt-navigation-compose",
+    "androidx-lifecycle-viewmodel-compose"
+]
+
+room-datasource = [
+    "room-ktx",
+    "room-runtime"
+]
+
+network = [
+    "retrofit",
+    "retrofit-kotlinx-serialization-json",
+    "okhttp",
+    "okhttp-logging-interceptor"
+]
+
