@@ -261,6 +261,14 @@ class TemplateValidator {
                     filePattern: '**/*DataSource*.kt',
                     severity: 'high',
                     message: 'PERFORMANCE CRITICAL: Individual API calls for each item cause slow loading. Use batch processing or paginated loading instead'
+                },
+                {
+                    id: 'PREVENT_N_PLUS_ONE_USE_CASE_PATTERN',
+                    description: 'Use cases must not contain N+1 query patterns with sequential operations',
+                    pattern: /forEach[\s\S]*(?:repository\.|suspend fun|\.fetch)/,
+                    filePattern: '**/*UseCase*.kt',
+                    severity: 'critical',
+                    message: 'PERFORMANCE CRITICAL: N+1 patterns in use cases cause extremely slow loading. Use parallel processing with async/awaitAll()'
                 }
             ]
         };

@@ -389,23 +389,23 @@ features/feature-name/
     ```
     - **Impact**: Poor user experience, difficult to diagnose issues, silent failures
 
-### Performance Anti-Patterns (UPDATED - Found in DeepSeekPokeAppEleven)  
+### Performance Anti-Patterns  
 19. **N+1 Network Query Pattern** ⚠️ **PERFORMANCE CRITICAL**
-    - ❌ Making individual API calls for each Pokemon in a list instead of batch requests
-    - ❌ Sequential API calls causing slow loading and poor user experience
-    - ✅ Implement batch processing or paginated loading:
+    - ❌ Sequential API calls for each item in a list
+    - ❌ Using `forEach` with individual network requests
+    - ✅ Implement parallel processing or batch operations:
     ```kotlin
-    // ❌ WRONG - Individual calls for each Pokemon
-    pokemonList.forEach { pokemon ->
-        apiService.getPokemonDetails(pokemon.id) // N+1 problem!
+    // ❌ WRONG - Sequential N+1 queries
+    items.forEach { item ->
+        repository.fetchDetails(item.id)
     }
     
-    // ✅ CORRECT - Batch or paginated approach
-    apiService.getPokemonDetailsBatch(pokemonIds)
-    // OR
-    apiService.getPokemonList(page, limit) // Paginated loading
+    // ✅ CORRECT - Parallel processing
+    items.map { item ->
+        async { repository.fetchDetails(item.id) }
+    }.awaitAll()
     ```
-    - **Impact**: Slow loading times, poor performance on slow connections, excessive API usage
+    - **Impact**: Extremely slow loading, poor user experience, excessive API usage
 
 ## Best Practices
 
