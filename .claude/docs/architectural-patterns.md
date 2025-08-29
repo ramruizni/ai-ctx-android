@@ -160,52 +160,133 @@ features/feature-name/
 
 ## Common Anti-Patterns to Avoid
 
+### Critical Security Anti-Patterns
+1. **Production HTTP Logging Vulnerability** ⚠️ **CRITICAL**
+   - ❌ Hardcoding `HttpLoggingInterceptor.Level.BODY` for all builds
+   - ❌ Always logging sensitive request/response data in production
+   - ✅ Use BuildConfig to control logging levels:
+   ```kotlin
+   val loggingInterceptor = HttpLoggingInterceptor().apply {
+       level = if (BuildConfig.DEBUG) {
+           HttpLoggingInterceptor.Level.BODY
+       } else {
+           HttpLoggingInterceptor.Level.NONE // Critical for production
+       }
+   }
+   ```
+   - **Impact**: Sensitive user data exposed in production logs, potential security compliance violations
+
+### Database Layer Anti-Patterns
+2. **Room Entity in Wrong Layer** ⚠️ **ARCHITECTURAL**
+   - ❌ Adding `@Entity` annotations to DataSource DTOs
+   - ❌ Tight coupling between data layer and persistence framework
+   - ✅ Keep Room entities in database module, DTOs clean in datasource
+   ```kotlin
+   // ❌ WRONG - In DataSource layer
+   @Entity(tableName = "pokemon")
+   data class PokemonDbDto(...)
+   
+   // ✅ CORRECT - Separate concerns
+   // Database module: PokemonEntity with @Entity
+   // DataSource module: PokemonDbDto without annotations
+   ```
+   - **Impact**: Violates Clean Architecture, difficult to change persistence technology
+
+3. **JSON String Storage Anti-Pattern**
+   - ❌ Storing complex objects as JSON strings in database
+   - ❌ Cannot query complex fields in SQL
+   - ✅ Use Room relationships or TypeConverters:
+   ```kotlin
+   // ❌ WRONG
+   val types: String, // JSON string of types
+   
+   // ✅ CORRECT
+   @TypeConverter
+   fun fromTypeList(types: List<String>): String = Json.encodeToString(types)
+   ```
+   - **Impact**: Performance issues, no referential integrity
+
+4. **Missing Production Migration Strategy** ⚠️ **CRITICAL**
+   - ❌ Using `.fallbackToDestructiveMigration()` without build checks
+   - ✅ Environment-aware migration strategy:
+   ```kotlin
+   Room.databaseBuilder(...)
+       .apply {
+           if (BuildConfig.DEBUG) {
+               fallbackToDestructiveMigration()
+           }
+           // Add proper migrations for production
+       }.build()
+   ```
+   - **Impact**: Data loss in production updates
+
+### Error Handling Anti-Patterns
+5. **Silent Error Handling**
+   - ❌ Catching exceptions and returning empty results without logging
+   - ❌ Users see empty states instead of error messages
+   - ✅ Proper error propagation:
+   ```kotlin
+   // ❌ WRONG
+   } catch (e: Exception) {
+       emptyList() // Error completely hidden!
+   }
+   
+   // ✅ CORRECT
+   } catch (e: Exception) {
+       logger.error("Failed to load data", e)
+       throw DataSourceException("Failed to load data", e)
+   }
+   ```
+
+### Architecture Layer Violations
+6. **Cross-Layer Import Violations**
+   - ❌ DataSource layer importing Domain models directly
+   - ❌ Breaks dependency inversion principle
+   - ✅ Maintain proper dependency direction (Domain ← Infrastructure ← DataSource)
+   ```kotlin
+   // ❌ WRONG - In DataSource layer
+   import com.example.domain.Pokemon
+   
+   // ✅ CORRECT - Map at Infrastructure layer
+   fun PokemonDbDto.toDomain(): Pokemon = ...
+   ```
+
+### Package Structure Anti-Patterns
+7. **Package Name Inconsistency** ⚠️ **BUILD CRITICAL**
+   - ❌ Mixing `com.example.starterdemo` and actual package names
+   - ❌ Different modules using different root packages
+   - ✅ Consistent package naming throughout project
+   - **Impact**: Build configuration confusion, import resolution issues
+
+8. **Missing Module Dependencies**
+   - ❌ DataSource module not depending on database module
+   - ❌ App module missing view module dependencies
+   - ✅ Proper dependency chain: app → infrastructure → datasource → database
+   - **Impact**: Build failures, circular dependency risks
+
 ### Navigation Issues
-1. **Incomplete Navigation Setup**
+9. **Incomplete Navigation Setup**
    - ❌ Leaving NavigationHost empty or commented out
    - ❌ Missing navigation graph definitions
    - ✅ Always complete navigation wiring in NavigationHost.kt
    - ✅ Define proper route classes and navigation graphs
 
-2. **Missing View Module Dependencies**
-   - ❌ App module not including `project(":feature:view")` dependency
-   - ✅ Always add view module dependency to app/build.gradle.kts
-   - Impact: UI screens won't be accessible
-
 ### Performance Anti-Patterns
-3. **Production HTTP Logging**
-   - ❌ Using `HttpLoggingInterceptor.Level.BODY` in all builds
-   - ✅ Use BuildConfig to control logging levels:
-   ```kotlin
-   level = if (BuildConfig.DEBUG) {
-       HttpLoggingInterceptor.Level.BODY
-   } else {
-       HttpLoggingInterceptor.Level.NONE
-   }
-   ```
+10. **N+1 Query Problems**
+    - ❌ Making sequential API calls for each item in a list
+    - ✅ Implement batch processing or optimize API calls
+    - **Impact**: Slow loading times, poor user experience on slow connections
 
-4. **N+1 Query Problems**
-   - ❌ Making sequential API calls for each item in a list
-   - ✅ Implement batch processing or optimize API calls
-   - Impact: Causes slow loading times and poor user experience
-
-### Database Anti-Patterns
-5. **Production Migration Issues**
-   - ❌ Using `.fallbackToDestructiveMigration()` in production
-   - ✅ Remove for production builds or add proper migration strategy
-   - Impact: Data loss in production updates
+11. **Excessive JSON Parsing**
+    - ❌ JSON parsing on every database read
+    - ✅ Cache parsed objects or use proper database relationships
+    - **Impact**: Unnecessary CPU overhead for data access
 
 ### Use Case Anti-Patterns  
-6. **Inconsistent Method Exposure**
-   - ❌ Exposing multiple methods on use cases (breaks SRP)
-   - ✅ Create separate use cases for different operations
-   - Example: Don't add `refresh()` method to GetPokemonListUseCase
-
-### Package Structure Issues
-7. **Package Inconsistency**
-   - ❌ Mixing `com.example.starterdemo` and actual package names
-   - ✅ Standardize on consistent package naming throughout
-   - Impact: Confusing project structure and potential build issues
+12. **Inconsistent Method Exposure**
+    - ❌ Exposing multiple methods on use cases (breaks SRP)
+    - ✅ Create separate use cases for different operations
+    - Example: Don't add `refresh()` method to GetPokemonListUseCase
 
 ## Best Practices
 

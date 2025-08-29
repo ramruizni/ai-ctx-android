@@ -110,13 +110,13 @@ class TemplateValidator {
                     message: 'Repository interfaces and implementations must be in separate files/modules'
                 },
                 {
-                    id: 'PREVENT_PRODUCTION_HTTP_LOGGING',
-                    description: 'HTTP logging should be debug-only configuration',
+                    id: 'PREVENT_PRODUCTION_HTTP_LOGGING_CRITICAL',
+                    description: 'HTTP logging SECURITY CRITICAL - must be debug-only configuration',
                     pattern: /HttpLoggingInterceptor\.Level\.BODY/,
                     requiresPattern: /BuildConfig\.DEBUG|if \(BuildConfig\.DEBUG\)/,
                     filePattern: '**/*NetworkModule*.kt',
-                    severity: 'high',
-                    message: 'HTTP body logging must be wrapped in BuildConfig.DEBUG checks for production safety'
+                    severity: 'critical',
+                    message: 'SECURITY CRITICAL: HTTP body logging exposes sensitive data in production logs'
                 },
                 {
                     id: 'PREVENT_DESTRUCTIVE_MIGRATION_PRODUCTION',
@@ -124,8 +124,40 @@ class TemplateValidator {
                     pattern: /fallbackToDestructiveMigration\(\)/,
                     requiresPattern: /BuildConfig\.DEBUG|if \(BuildConfig\.DEBUG\)/,
                     filePattern: '**/*DatabaseModule*.kt',
+                    severity: 'critical',
+                    message: 'DATA CRITICAL: Destructive migration causes data loss in production updates'
+                },
+                {
+                    id: 'PREVENT_ROOM_ENTITY_IN_DATASOURCE',
+                    description: 'Room entities must not be in DataSource layer - architectural violation',
+                    pattern: /@Entity\(tableName\s*=\s*"/,
+                    filePattern: '**/datasource/**/*.kt',
                     severity: 'high',
-                    message: 'Destructive migration should only be enabled for debug builds to prevent data loss'
+                    message: 'ARCHITECTURAL VIOLATION: Room entities must be in database module, not datasource layer'
+                },
+                {
+                    id: 'PREVENT_CROSS_LAYER_DOMAIN_IMPORTS',
+                    description: 'DataSource layer must not import Domain models directly',
+                    pattern: /import\s+.*\.domain\./,
+                    filePattern: '**/datasource/**/*.kt',
+                    severity: 'high',
+                    message: 'DEPENDENCY INVERSION VIOLATION: DataSource layer cannot import Domain - map at Infrastructure layer'
+                },
+                {
+                    id: 'PREVENT_SILENT_ERROR_HANDLING',
+                    description: 'Catch blocks must not return empty results without logging',
+                    pattern: /catch\s*\([^}]*\)\s*\{\s*(?:return\s+)?emptyList\(\)\s*\}/,
+                    filePattern: '**/*Repository*.kt',
+                    severity: 'high',
+                    message: 'SILENT FAILURE: Errors must be logged and propagated, not hidden with empty results'
+                },
+                {
+                    id: 'PREVENT_JSON_STRING_STORAGE',
+                    description: 'Complex data should not be stored as JSON strings in database',
+                    pattern: /val\s+\w+:\s+String.*\/\/.*JSON/,
+                    filePattern: '**/*DbDto*.kt',
+                    severity: 'medium',
+                    message: 'PERFORMANCE ISSUE: Use Room relationships or TypeConverters instead of JSON strings'
                 },
                 {
                     id: 'REQUIRE_DATASOURCE_DATABASE_DEPENDENCY',
