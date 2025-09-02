@@ -51,6 +51,7 @@ I will:
 - **Validate project structure**: Ensure target is valid Android project
 - **Load project configuration**: Read `.claude/project-config.json` or create if missing
 - **Analyze existing modules**: Understand current project structure and dependencies
+- **Database infrastructure analysis**: Detect existing Room database, entities, DAOs, and database module architecture
 
 ### Step 2: Feature Analysis with Context Awareness
 I will:
@@ -71,12 +72,12 @@ This ensures:
 - **Consistent architecture** across all generated code
 
 ### Step 4: Module Structure Creation (Target Project)
-I will create modules in the target project following its architecture:
+I will create modules in the target project following its architecture and existing database setup:
 
 **Data Entity Modules** (in target project):
 - `{target}/:entity-name:domain` - Pure Kotlin module with models, use cases, repository interfaces
 - `{target}/:entity-name:infrastructure` - Repository implementations 
-- `{target}/:entity-name:datasource` - Room DAOs, DbDtos, and database access
+- `{target}/:entity-name:datasource` - Room DAOs, DbDtos, and database access (reuse existing database module if found in Step 1)
 
 **Feature Modules** (in target project):
 - `{target}/:features:feature-name:view` - Composable screens and UI components
@@ -97,10 +98,9 @@ I will update the target project files:
 
 ### Step 7: Database Setup with Project Integration (if needed)
 If the feature requires data persistence:
-- **Detect existing database**: Check target project's database setup
-- **Integrate with existing**: Add entities to existing database or create new setup
-- **Update database class**: Modify target project's database configuration
-- **Maintain consistency**: Follow target project's database patterns
+- **Integrate with existing database**: Add entities to existing database found in Step 1, or create new setup if none exists
+- **Update database class**: Modify target project's database configuration using patterns identified in Step 1
+- **Maintain consistency**: Follow target project's existing database architecture and naming conventions
 
 ### Step 8: Domain Layer Creation (Target Project Context)
 I will create in target project using its patterns:

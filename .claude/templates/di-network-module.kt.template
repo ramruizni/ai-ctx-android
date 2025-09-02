@@ -1,0 +1,60 @@
+package {{PACKAGE_NAME}}.di.modules
+
+import {{PACKAGE_NAME}}.BuildConfig
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import {{PACKAGE_NAME}}.{{ENTITY_NAME}}.datasource.network.{{ENTITY_CLASS_NAME}}ApiService
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideJson(): Json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
+            })
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        json: Json
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://pokeapi.co/api/v2/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provide{{ENTITY_CLASS_NAME}}ApiService(retrofit: Retrofit): {{ENTITY_CLASS_NAME}}ApiService {
+        return retrofit.create({{ENTITY_CLASS_NAME}}ApiService::class.java)
+    }
+}

@@ -1,13 +1,17 @@
-# Android Clean Architecture Project Context
+# Android Clean Architecture Context
 
-## CRITICAL: Command Execution Model
-**ALL commands must be run from ai-ctx-android directory using --target parameter**
-- ✅ `cd ai-ctx-android && /create-feature UserProfile --target /full/path/to/MyProject`  
-- ❌ `cd MyProject && /create-feature UserProfile`
+## CRITICAL: Fully Automatic Improvement Cycle
+**Zero manual steps** - the system improves everything automatically.
 
-**Prerequisites**: Run `/check-prerequisites` once for environment setup before using other commands.
+### Seamless Process:
+```bash
+cd ai-ctx-android
+/init-project MyProject --target /path/to/MyProject        # ✅ Uses current best templates
+/create-feature UserProfile --target /path/to/MyProject    # ✅ Clean generation  
+/improve-generator /path/to/MyProject                       # ✅ AUTO-FIXES everything
+```
 
-Projects are NOT self-contained - they only contain minimal config for centralized management.
+**Comprehensive auto-improvements**: Templates, docs, commands, agents, intelligence.
 
 ## Project Overview
 Multi-module Android project following Clean Architecture with MVVM pattern, using:
@@ -18,12 +22,16 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 - **Navigation**: Navigation Compose
 - **Build**: Gradle with Kotlin DSL and build-logic conventions
 
-## Available Commands
-- `/check-prerequisites` - Verify and configure development environment (run once)
-- `/init-project` - Initialize new project anywhere on your system (supports `--target` and `--project-type` parameters)
-- `/create-feature` - Create complete feature in any project (supports `--target`, `--project-type` parameters, and feature description)
-- `/setup-db` - Setup/update database module in any project (supports `--target` parameter) 
-- `/setup-navigation` - Create navigation routes and graphs in any project (supports `--target` parameter)
+## Commands (Template-Validated)
+
+### Core Commands (Now with validation)
+- `/init-project` - Project creation with pre-validated templates
+- `/create-feature` - Feature creation with quality-assured templates  
+- `/agentic-create-feature` - Parallel generation with enterprise validation
+
+### Fully Automatic Improvement Cycle  
+- `/improve-generator` - Audit → **AUTO-FIX EVERYTHING** → Next project improved
+- **No manual steps required** - templates, docs, commands, agents all improve automatically
 
 ## Project Types (Recommended)
 - **`default`**: Standard Clean Architecture with simple use cases
@@ -32,7 +40,19 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 ### Usage Examples
 **IMPORTANT**: Run all commands from the ai-ctx-android directory to use centralized templates.
 
-#### Existing Sunshine Projects (57blocks-common)
+#### Existing Sunshine Projects (57blocks-common) - **AGENTIC RECOMMENDED**
+```bash
+# Photo management with command pattern (2-3 minutes vs 8+ minutes)
+/agentic-create-feature PhotoGallery --project-type 57blocks-common --target /full/path/to/Sunshine-Photos "Photo gallery with grid layout displaying thumbnails, search functionality with text and tag filters, image filtering by date/size/type, detailed photo view with EXIF metadata display, zoom and pan capabilities, sharing to social media platforms, and batch selection for operations"
+
+# Event planning with basedomain architecture (parallel generation)
+/agentic-create-feature EventPlanner --project-type 57blocks-common --target /full/path/to/Dazzle "Event planning interface with interactive calendar view for date selection, guest list management with contact import from phone, venue selection with map integration and reviews, RSVP tracking with push notifications, budget tracking with expense categories, and event template creation for recurring events"
+
+# Guest management with UseCaseResult pattern (enterprise-grade quality)
+/agentic-create-feature GuestManagement --project-type 57blocks-common --target /full/path/to/Sunshine-Parties "Guest management system with contact import from phone/email, invitation sending via SMS/email with custom templates, RSVP tracking with response analytics, attendance tracking with check-in QR codes, dietary restrictions management, and guest communication history"
+```
+
+#### Standard Commands (Sequential - Legacy)
 ```bash
 # Photo management with command pattern
 /create-feature PhotoGallery --project-type 57blocks-common --target /full/path/to/Sunshine-Photos "Photo gallery with grid layout, search, filtering, and detailed photo view with metadata"
@@ -44,7 +64,16 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 /create-feature GuestManagement --project-type 57blocks-common --target /full/path/to/Sunshine-Parties "Guest management system with contact import, invitation sending, and attendance tracking"
 ```
 
-#### Personal Projects (default architecture)
+#### Personal Projects (default architecture) - **AGENTIC RECOMMENDED**
+```bash
+# Travel planning with simple use cases (parallel generation)
+/agentic-create-feature TripPlanner --project-type default --target /full/path/to/GeYuGoApp "Trip planning application with destination search using maps integration, day-by-day itinerary builder with time slots, expense tracker with category breakdown and currency conversion, travel document storage with photo scanning, weather information integration, and offline access for key information"
+
+# Movie tracking with standard Clean Architecture (enterprise quality)
+/agentic-create-feature Watchlist --project-type default --target /full/path/to/MoviesApp "Movie watchlist with search functionality using movie database APIs, personal rating system with reviews, watchlist categories (want to watch, watched, favorites), recommendation engine based on preferences, sharing capabilities with friends, and detailed movie information with trailers and cast"
+```
+
+#### Standard Commands (Sequential - Legacy)
 ```bash
 # Travel planning with simple use cases
 /create-feature TripPlanner --project-type default --target /full/path/to/GeYuGoApp "Trip planning with destination search, itinerary builder, expense tracker, and travel document storage"
@@ -64,6 +93,47 @@ Multi-module Android project following Clean Architecture with MVVM pattern, usi
 # Then add features with descriptions
 /create-feature WorkoutTracker --project-type default --target /my/projects/FitnessTracker "Workout tracking with exercise library, timer, progress charts, and workout history"
 ```
+
+#### Quality Assurance & Continuous Improvement Workflow
+```bash
+# RECOMMENDED: Run after every project/feature creation
+# This makes the generator smarter and prevents future issues
+
+# Complete improvement cycle (recommended after new projects)
+/improve-generator /full/path/to/NewProject
+
+# OR run individual commands for granular control:
+
+# 1. Expert audit only (identifies architectural issues)
+/audit-project /full/path/to/NewProject
+
+# 2. After creating multiple projects, improve the generator
+/improve-generator /full/path/to/RecentProject
+
+# 3. Validate templates before creating new projects (optional)
+node .claude/scripts/template-validator.js validate --verbose
+```
+
+#### Expert Audit Capabilities
+The audit system provides **enterprise-grade** analysis equivalent to a **10-year senior Android engineer**:
+
+- **🚨 Critical Issues**: Build-breaking problems (circular dependencies, missing files)
+- **⚠️ Architectural Violations**: Clean Architecture compliance, layer separation
+- **🔧 DI Pattern Issues**: Hilt setup, injection patterns, scope violations  
+- **🗄️ Database Layer**: Room implementation, entity placement, TypeConverters
+- **📱 ViewModel Patterns**: State management, dependency injection, lifecycle awareness
+- **🧭 Navigation Setup**: Route definitions, navigation patterns
+- **🔒 Security Issues**: Hardcoded secrets, insecure storage, permission usage
+- **⚡ Performance**: Memory leaks, UI thread blocking, unoptimized queries
+
+#### Documentation Self-Improvement
+Every audit automatically improves this documentation:
+
+- **Anti-patterns Guide**: Common mistakes and how to avoid them
+- **Template Validation**: Prevents bad code generation
+- **Best Practices**: Updated based on real issues found
+- **Troubleshooting**: Solutions for common problems
+- **Architectural Patterns**: Enhanced with discovered violations
 
 ## Cross-Project Capabilities
 - **Flexible location**: Create and manage projects anywhere on your system

@@ -2,6 +2,7 @@ package {{PACKAGE_NAME}}.di.modules
 
 import android.content.Context
 import androidx.room.Room
+import {{PACKAGE_NAME}}.BuildConfig
 import {{PACKAGE_NAME}}.database.{{DATABASE_CLASS_NAME}}
 import dagger.Module
 import dagger.Provides
@@ -22,5 +23,10 @@ object DatabaseModule {
         context,
         {{DATABASE_CLASS_NAME}}::class.java,
         "{{DATABASE_NAME}}"
-    ).build()
+    ).apply {
+        if (BuildConfig.DEBUG) {
+            fallbackToDestructiveMigration()
+        }
+        // Add proper migrations for production releases
+    }.build()
 }

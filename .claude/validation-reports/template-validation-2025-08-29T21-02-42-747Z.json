@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-08-29T21:02:42.746Z",
+  "summary": {
+    "totalTemplates": 33,
+    "totalViolations": 0,
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "isValid": true
+  },
+  "violations": [],
+  "recommendations": []
+}
