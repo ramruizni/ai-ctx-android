@@ -1,0 +1,15 @@
+{
+  "packageName": "com.example.todopapp",
+  "projectName": "TodOpApp",
+  "createdAt": "2025-01-01T17:15:00.000Z",
+  "aiCtxAndroidVersion": "8f9339dd35acbc9eef80380f9ecb79d99d8ca51a",
+  "projectType": "default",
+  "architecturalPreferences": {
+    "diModuleStyle": "object-provides",
+    "useCasePattern": "simple-pattern",
+    "logging": "none",
+    "injectionPattern": "manual-instantiation"
+  },
+  "requiredDependencies": [],
+  "customDependencies": []
+}

@@ -1,6 +1,0 @@
-package com.example.deepseekpokeappten.navigation
-
-import kotlinx.serialization.Serializable
-
-@Serializable
-data object RootGraphRoute
